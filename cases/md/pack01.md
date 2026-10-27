@@ -5,6 +5,9 @@
 - pack_id: pack01
 - title: 旧钟楼
 - version: 1
+- description: 旧钟楼街的钟表铺关了三天。沈砚失踪了，认识他的人却都在等你回来。
+- difficulty: 3
+- rounds: 6
 
 ## profile
 

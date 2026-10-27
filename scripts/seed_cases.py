@@ -23,7 +23,17 @@ DEFAULT_TITLE = "PlayAlong Case Library"
 DEFAULT_SUMMARY = "PlayAlong case library managed by scripts/seed_cases.py."
 DEFAULT_MAX_BYTES = 8192
 
-TOP_KEYS = {"pack_id", "title", "version", "profile", "npcs", "fragments"}
+TOP_KEYS = {
+    "pack_id",
+    "title",
+    "version",
+    "description",
+    "difficulty",
+    "rounds",
+    "profile",
+    "npcs",
+    "fragments",
+}
 PROFILE_KEYS = {
     "name",
     "age",
@@ -207,6 +217,13 @@ def validate_case(case: Any, source: Path, max_bytes: int) -> list[str]:
     check_string(case["pack_id"], f"{label}.pack_id", errors)
     check_string(case["title"], f"{label}.title", errors)
     check_int(case["version"], f"{label}.version", errors, minimum=1)
+    check_string(case["description"], f"{label}.description", errors)
+    if isinstance(case["description"], str) and len(case["description"]) > 120:
+        errors.append(f"{label}.description 不能超过 120 个字符")
+    check_int(case["difficulty"], f"{label}.difficulty", errors, minimum=1)
+    if type(case["difficulty"]) is int and case["difficulty"] > 5:
+        errors.append(f"{label}.difficulty 必须在 1 到 5 之间")
+    check_int(case["rounds"], f"{label}.rounds", errors, minimum=1)
 
     if check_keys(case["profile"], PROFILE_KEYS, f"{label}.profile", errors):
         profile = case["profile"]

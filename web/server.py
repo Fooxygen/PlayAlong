@@ -92,7 +92,7 @@ def post_json(url: str, payload: dict[str, Any], token: str) -> dict[str, Any]:
     return result
 
 
-def get_cases() -> list[dict[str, str]]:
+def get_cases() -> list[dict[str, Any]]:
     """Read the case catalog from PowerContext and return non-spoiler summaries."""
 
     data = post_json(
@@ -101,7 +101,7 @@ def get_cases() -> list[dict[str, str]]:
         require_env("PC_TOKEN"),
     )
 
-    cases: list[dict[str, str]] = []
+    cases: list[dict[str, Any]] = []
     for entry in data.get("entries", []):
         if entry.get("kind") != "playalong.case":
             continue
@@ -123,6 +123,9 @@ def get_cases() -> list[dict[str, str]]:
             {
                 "pack_id": str(case.get("pack_id", "")),
                 "title": str(case.get("title", "")),
+                "description": str(case.get("description", "")),
+                "difficulty": int(case.get("difficulty", 0)),
+                "rounds": int(case.get("rounds", 0)),
                 "name": str(profile.get("name", "")),
                 "occupation": str(profile.get("occupation", "")),
                 "disappearance": str(profile.get("disappearance", "")),
