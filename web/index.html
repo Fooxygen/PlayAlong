@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatFlow - Kawaii Game Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans JP & Rounded Mplus 1c for Kawaii Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'M PLUS Rounded 1c', 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Kawaii Grid Pattern Background */
+        .bg-kawaii-pattern {
+            background-color: #f7f4ff;
+            background-image: 
+                radial-gradient(#e0d5ff 2px, transparent 2px),
+                radial-gradient(#e0d5ff 2px, #f7f4ff 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+
+        /* Kawaii Thick Border & Pop Shadow */
+        .kawaii-card {
+            border: 3.5px solid #2d2d3a;
+            box-shadow: 6px 6px 0px #2d2d3a;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .kawaii-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0px #2d2d3a;
+        }
+
+        .kawaii-btn {
+            border: 3.5px solid #2d2d3a;
+            box-shadow: 4px 4px 0px #2d2d3a;
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .kawaii-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #2d2d3a;
+        }
+
+        .kawaii-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #2d2d3a;
+        }
+
+        /* Float animation for main logo */
+        @keyframes kawaii-float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1.5deg); }
+        }
+
+        .animate-float {
+            animation: kawaii-float 4s ease-in-out infinite;
+        }
+
+        /* Pulse glow animation */
+        @keyframes kawaii-pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .animate-pulse-glow {
+            animation: kawaii-pulse 3s ease-in-out infinite;
+        }
+
+        /* Page transition styles */
+        .page-view {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95) translateY(10px);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .page-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f0f7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c3b5f5;
+            border-radius: 10px;
+            border: 2px solid #2d2d3a;
+        }
+    </style>
+</head>
+<body class="bg-kawaii-pattern min-h-screen text-[#2d2d3a] flex flex-col justify-between relative overflow-x-hidden">
+
+    <!-- Top Decorative Header Line -->
+    <div class="h-3 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 border-b-4 border-[#2d2d3a]"></div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 md:p-8 relative">
+
+        <!-- ================= PAGE 1: HOME / LANDING PAGE ================= -->
+        <section id="page-home" class="page-view page-visible flex flex-col items-center justify-center text-center max-w-2xl w-full py-8">
+            
+            <!-- Kawaii Decorative Tech Badges -->
+            <div class="inline-flex items-center gap-2 bg-yellow-300 px-4 py-1.5 rounded-full border-2 border-[#2d2d3a] font-extrabold text-xs sm:text-sm tracking-wider uppercase mb-8 shadow-[3px_3px_0px_#2d2d3a]">
+                <i class="fa-solid font-bold fa-sparkles text-pink-500"></i>
+                <span>Interactive AI Story Game</span>
+                <i class="fa-solid font-bold fa-heart text-pink-500"></i>
+            </div>
+
+            <!-- LOGO AREA (KawaiiLogos Style) -->
+            <div class="relative my-4 cursor-pointer animate-float group" onclick="startGame()">
+                <!-- Soft Glow behind Logo -->
+                <div class="absolute -inset-4 bg-gradient-to-r from-pink-300 via-purple-300 to-cyan-300 rounded-3xl blur-xl opacity-70 group-hover:opacity-100 transition duration-500 animate-pulse-glow"></div>
+                
+                <!-- Main Kawaii Tech Logo Badge -->
+                <div class="relative bg-white border-[4px] border-[#2d2d3a] rounded-3xl px-8 py-6 sm:px-12 sm:py-8 shadow-[8px_8px_0px_#2d2d3a] flex flex-col items-center gap-2">
+                    <!-- Tech Corner Accents -->
+                    <div class="absolute -top-2 -left-2 w-5 h-5 bg-pink-400 border-2 border-[#2d2d3a] rounded-full"></div>
+                    <div class="absolute -bottom-2 -right-2 w-5 h-5 bg-cyan-400 border-2 border-[#2d2d3a] rounded-full"></div>
+
+                    <!-- Icon & Title Combo -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-pink-400 rounded-2xl border-3 border-[#2d2d3a] flex items-center justify-center text-white text-2xl sm:text-3xl shadow-[3px_3px_0px_#2d2d3a] transform -rotate-6">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-[#2d2d3a] drop-shadow-sm">
+                            Chat<span class="text-pink-500">Flow</span>
+                        </h1>
+                    </div>
+
+                    <!-- Japanese Subtitle Tag (Kawaii Style Accent) -->
+                    <div class="bg-indigo-100 text-indigo-800 text-xs sm:text-sm font-bold px-3 py-1 rounded-md border border-indigo-300 mt-1">
+                        チャット・フロー ✨ AI冒険対話
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-gray-600 font-bold text-sm sm:text-base max-w-md mt-6 mb-10 leading-relaxed bg-white/70 backdrop-blur-sm p-4 rounded-2xl border-2 border-[#2d2d3a]/20">
+                探索充满未知的对话故事线！轻点下方按钮，开启属于你的 AI 互动故事之旅！🚀
+            </p>
+
+            <!-- START BUTTON (Large Pill Button) -->
+            <button onclick="startGame()" class="kawaii-btn bg-pink-400 hover:bg-pink-300 text-white font-black text-xl sm:text-2xl px-12 py-4 rounded-full flex items-center gap-4 group cursor-pointer">
+                <span>START GAME</span>
+                <div class="w-10 h-10 bg-white rounded-full text-pink-500 flex items-center justify-center text-lg group-hover:translate-x-1 transition-transform">
+                    <i class="fa-solid fa-play"></i>
+                </div>
+            </button>
+
+            <!-- Bottom Kawaii Decorative Stat -->
+            <div class="flex items-center gap-6 mt-12 text-xs font-bold text-gray-500">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-yellow-500"></i> 原生轻量</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-face-smile text-pink-400"></i> 趣味剧情</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> 无需依赖</span>
+            </div>
+        </section>
+
+
+        <!-- ================= PAGE 2: CASE SELECTION PAGE ================= -->
+        <section id="page-cases" class="page-view page-hidden max-w-4xl w-full my-auto py-4">
+            
+            <!-- Top Action Header -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-white p-4 sm:p-5 rounded-3xl border-3 border-[#2d2d3a] shadow-[5px_5px_0px_#2d2d3a]">
+                
+                <!-- Page Title -->
+                <div class="flex items-center gap-3">
+                    <button onclick="goHome()" class="kawaii-btn w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center text-[#2d2d3a] font-bold" title="返回主页">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-black text-[#2d2d3a] flex items-center gap-2">
+                            <span>选择剧本 Case</span>
+                            <span class="text-xs bg-pink-100 text-pink-600 border border-pink-300 px-2.5 py-0.5 rounded-full font-bold">Select Stage</span>
+                        </h2>
+                        <p class="text-xs text-gray-500 font-bold">选择一个你感兴趣的故事 Flow 开始互动吧！</p>
+                    </div>
+                </div>
+
+                <!-- Right Control Buttons (Random Selector & Home) -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <!-- Random Select Button -->
+                    <button onclick="selectRandomCase()" class="kawaii-btn bg-yellow-300 hover:bg-yellow-200 text-[#2d2d3a] font-extrabold text-sm px-5 py-2.5 rounded-2xl flex items-center justify-center gap-2 w-full sm:w-auto">
+                        <i class="fa-solid fa-dice text-lg text-purple-600"></i>
+                        <span>Random (随机挑选)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- CASES GRID CONTAINER -->
+            <div id="cases-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                <!-- Case Items will be dynamically generated via JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-4 text-center text-xs font-bold text-gray-500 border-t-2 border-[#2d2d3a]/10 bg-white/40">
+        <p>ChatFlow Mini Game • Pure JS & Lightweight Design • Inspired by KawaiiLogos</p>
+    </footer>
+
+    <!-- INTERACTION MODAL (Simulates Entering a Game Flow) -->
+    <div id="game-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="kawaii-card bg-white max-w-md w-full rounded-3xl p-6 sm:p-8 relative transform scale-90 transition-transform duration-300" id="modal-card">
+            
+            <!-- Modal Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-500 rounded-full border-2 border-[#2d2d3a] flex items-center justify-center font-bold transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Content Area -->
+            <div class="text-center">
+                <div id="modal-icon-bg" class="w-20 h-20 mx-auto mb-4 rounded-3xl border-3 border-[#2d2d3a] flex items-center justify-center text-4xl shadow-[4px_4px_0px_#2d2d3a]">
+                    <span id="modal-icon">🤖</span>
+                </div>
+
+                <div class="inline-block bg-purple-100 text-purple-700 text-xs font-extrabold px-3 py-1 rounded-full border border-purple-300 mb-2" id="modal-tag">
+                    ChatFlow Stage
+                </div>
+
+                <h3 id="modal-title" class="text-2xl font-black text-[#2d2d3a] mb-2">
+                    Case Title
+                </h3>
+
+                <p id="modal-desc" class="text-sm font-bold text-gray-600 mb-6 leading-relaxed">
+                    Case Description goes here...
+                </p>
+
+                <div class="bg-gray-50 p-4 rounded-2xl border-2 border-dashed border-gray-300 mb-6 text-left">
+                    <div class="text-xs font-black text-gray-400 mb-1">FLOW PARAMETERS</div>
+                    <div id="modal-meta" class="text-xs font-bold text-gray-700 space-y-1">
+                        <!-- Dynamic metadata -->
+                    </div>
+                </div>
+
+                <button onclick="alert('🎮 准备就绪！这里将启动你的 ChatFlow 对话引擎逻辑。')" class="kawaii-btn bg-cyan-400 hover:bg-cyan-300 text-[#2d2d3a] font-black text-lg py-3.5 px-8 rounded-2xl w-full flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>进入 ChatFlow 对话</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 预设的 ChatFlow Case 数据表
+        const casesData = [
+            {
+                id: 'case-1',
+                title: '猫咪解密侦探社',
+                subtitle: 'Detective Cat Case',
+                desc: '你将与一只智商高达200的英短猫侦探合作，破解密室消失的鱼干之谜！',
+                icon: '🐱',
+                color: 'bg-pink-300',
+                tag: '解谜推理',
+                difficulty: '★☆☆☆☆',
+                turns: '约 5-8 轮对话'
+            },
+            {
+                id: 'case-2',
+                title: '赛博夜市烤串摊',
+                subtitle: 'Cyberpunk BBQ Stall',
+                desc: '2077年的赛博夜市，你作为摊主需要用特调AI酱料满足各种奇怪客人的需求。',
+                icon: '🍢',
+                color: 'bg-yellow-300',
+                tag: '经营模拟',
+                difficulty: '★★☆☆☆',
+                turns: '约 8-12 轮对话'
+            },
+            {
+                id: 'case-3',
+                title: '魔法学园末等生',
+                subtitle: 'Magic Academy Apprentice',
+                desc: '施咒总是炸锅？通过正确的魔法吟唱对话完成期末考察，别把教室点着了！',
+                icon: '🧙‍♀️',
+                color: 'bg-purple-300',
+                tag: '奇幻角色扮演',
+                difficulty: '★★★☆☆',
+                turns: '约 10-15 轮对话'
+            },
+            {
+                id: 'case-4',
+                title: '社恐机器人的面试',
+                subtitle: 'Social Anxiety Robot',
+                desc: '指导面试极其紧张的代号 X-09 机器人，帮它克服卡顿并顺利拿到 Offer！',
+                icon: '🤖',
+                color: 'bg-cyan-300',
+                tag: '温情养成',
+                difficulty: '★★☆☆☆',
+                turns: '约 6-10 轮对话'
+            },
+            {
+                id: 'case-5',
+                title: '星际空间站求生',
+                subtitle: 'Interstellar Survival',
+                desc: '警报！主控AI陷入了哲学思考并拒绝开门，你需要劝说它重新恢复系统运行。',
+                icon: '🚀',
+                color: 'bg-indigo-300',
+                tag: '科幻说服',
+                difficulty: '★★★★☆',
+                turns: '自由对话'
+            },
+            {
+                id: 'case-6',
+                title: '超时空咖啡馆',
+                subtitle: 'Time Traveler Coffee',
+                desc: '接待来自不同历史时代的客人，聆听他们的烦恼并为你调制一杯特制咖啡。',
+                icon: '☕',
+                color: 'bg-emerald-300',
+                tag: '治愈系',
+                difficulty: '★☆☆☆☆',
+                turns: '无限模式'
+            }
+        ];
+
+        // 页面初始化：渲染 Case 列表
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCases();
+        });
+
+        // 渲染 Case 列表到 DOM
+        function renderCases() {
+            const container = document.getElementById('cases-grid');
+            container.innerHTML = '';
+
+            casesData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = `kawaii-card bg-white p-5 rounded-3xl cursor-pointer relative flex flex-col justify-between group`;
+                card.onclick = () => openCaseModal(item);
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Top Header inside Card -->
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="w-12 h-12 rounded-2xl ${item.color} border-2 border-[#2d2d3a] flex items-center justify-center text-2xl shadow-[3px_3px_0px_#2d2d3a] transform group-hover:rotate-6 transition-transform">
+                                ${item.icon}
+                            </div>
+                            <span class="text-xs font-black px-3 py-1 rounded-full border-2 border-[#2d2d3a] bg-gray-100 text-[#2d2d3a]">
+                                ${item.tag}
+                            </span>
+                        </div>
+
+                        <!-- Title & Subtitle -->
+                        <h3 class="text-lg font-black text-[#2d2d3a] group-hover:text-pink-500 transition-colors flex items-center gap-2">
+                            ${item.title}
+                        </h3>
+                        <p class="text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-wide">${item.subtitle}</p>
+
+                        <!-- Description -->
+                        <p class="text-xs font-bold text-gray-600 leading-relaxed line-clamp-2">
+                            ${item.desc}
+                        </p>
+                    </div>
+
+                    <!-- Bottom Action Info -->
+                    <div class="mt-4 pt-3 border-t-2 border-dashed border-gray-200 flex items-center justify-between text-xs font-black text-gray-500">
+                        <span>难度: <span class="text-amber-500">${item.difficulty}</span></span>
+                        <span class="text-pink-500 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                            START <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // 主界面切换逻辑：点击 START
+        function startGame() {
+            const homePage = document.getElementById('page-home');
+            const casesPage = document.getElementById('page-cases');
+
+            // 隐藏 Home 页面
+            homePage.classList.remove('page-visible');
+            homePage.classList.add('page-hidden');
+
+            // 稍作延迟显示 Cases 页面，营造顺畅的入场过度
+            setTimeout(() => {
+                casesPage.classList.remove('page-hidden');
+                casesPage.classList.add('page-visible');
+            }, 200);
+        }
+
+        // 返回主界面
+        function goHome() {
+            const homePage = document.getElementById('page-home');
+            const casesPage = document.getElementById('page-cases');
+
+            casesPage.classList.remove('page-visible');
+            casesPage.classList.add('page-hidden');
+
+            setTimeout(() => {
+                homePage.classList.remove('page-hidden');
+                homePage.classList.add('page-visible');
+            }, 200);
+        }
+
+        // 随机选择一个 Case (Random 按钮)
+        function selectRandomCase() {
+            // 给按钮加个随机动画效果感
+            const randomIndex = Math.floor(Math.random() * casesData.length);
+            const selectedCase = casesData[randomIndex];
+            
+            // 稍作晃动动效后打开 Modal
+            openCaseModal(selectedCase);
+        }
+
+        // 打开 Case 详情 Modal 框
+        function openCaseModal(item) {
+            const modal = document.getElementById('game-modal');
+            const modalCard = document.getElementById('modal-card');
+
+            // 填入数据
+            document.getElementById('modal-icon').innerText = item.icon;
+            document.getElementById('modal-icon-bg').className = `w-20 h-20 mx-auto mb-4 rounded-3xl border-3 border-[#2d2d3a] flex items-center justify-center text-4xl shadow-[4px_4px_0px_#2d2d3a] ${item.color}`;
+            document.getElementById('modal-tag').innerText = item.tag;
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-desc').innerText = item.desc;
+            
+            document.getElementById('modal-meta').innerHTML = `
+                <div class="flex justify-between"><span>副标题:</span> <span>${item.subtitle}</span></div>
+                <div class="flex justify-between"><span>预估回合:</span> <span>${item.turns}</span></div>
+                <div class="flex justify-between"><span>剧本难度:</span> <span class="text-amber-500">${item.difficulty}</span></div>
+            `;
+
+            // 显示 Modal
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalCard.classList.remove('scale-90');
+                modalCard.classList.add('scale-100');
+            }, 10);
+        }
+
+        // 关闭 Modal 框
+        function closeModal() {
+            const modal = document.getElementById('game-modal');
+            const modalCard = document.getElementById('modal-card');
+
+            modalCard.classList.remove('scale-100');
+            modalCard.classList.add('scale-90');
+            modal.classList.add('opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
