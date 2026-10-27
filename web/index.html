@@ -7,13 +7,13 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Noto Sans JP & Rounded Mplus 1c for Kawaii Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Noto+Sans+SC:wght@500;700;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body {
-            font-family: 'M PLUS Rounded 1c', 'Nunito', sans-serif;
+            font-family: 'M PLUS Rounded 1c', 'Noto Sans SC', 'Nunito', sans-serif;
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             background-attachment: fixed;
             overflow-x: hidden;
@@ -80,24 +80,20 @@
 
         /* Page transition styles */
         .page-view {
+            grid-area: 1 / 1;
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .page-hidden {
             opacity: 0;
             pointer-events: none;
-            transform: scale(0.95) translateY(10px);
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+            transform: scale(0.95);
         }
 
         .page-visible {
             opacity: 1;
             pointer-events: auto;
-            transform: scale(1) translateY(0);
+            transform: scale(1);
         }
 
         /* Custom Scrollbar */
@@ -120,7 +116,7 @@
     <div class="h-3 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 border-b-4 border-[#2d2d3a]"></div>
 
     <!-- MAIN CONTAINER -->
-    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 md:p-8 relative">
+    <main class="flex-grow grid place-items-center p-4 sm:p-6 md:p-8 relative">
 
         <!-- ================= PAGE 1: HOME / LANDING PAGE ================= -->
         <section id="page-home" class="page-view page-visible flex flex-col items-center justify-center text-center max-w-2xl w-full py-8">
@@ -162,7 +158,7 @@
 
             <!-- Description -->
             <p class="text-gray-600 font-bold text-sm sm:text-base max-w-md mt-6 mb-10 leading-relaxed bg-white/70 backdrop-blur-sm p-4 rounded-2xl border-2 border-[#2d2d3a]/20">
-                探索充满未知的对话故事线！轻点下方按钮，开启属于你的 AI 互动故事之旅！🚀
+                你顶替了一个失踪的人。用他不完整的记忆，应付所有认识他的人——别露馅。
             </p>
 
             <!-- START BUTTON (Large Pill Button) -->
@@ -175,9 +171,9 @@
 
             <!-- Bottom Kawaii Decorative Stat -->
             <div class="flex items-center gap-6 mt-12 text-xs font-bold text-gray-500">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-yellow-500"></i> 原生轻量</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-yellow-500"></i> 记忆留痕</span>
                 <span class="flex items-center gap-1.5"><i class="fa-solid fa-face-smile text-pink-400"></i> 趣味剧情</span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> 无需依赖</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> 身份博弈</span>
             </div>
         </section>
 
@@ -195,10 +191,9 @@
                     </button>
                     <div>
                         <h2 class="text-xl sm:text-2xl font-black text-[#2d2d3a] flex items-center gap-2">
-                            <span>选择剧本 Case</span>
-                            <span class="text-xs bg-pink-100 text-pink-600 border border-pink-300 px-2.5 py-0.5 rounded-full font-bold">Select Stage</span>
+                            <span>选择剧本</span>
                         </h2>
-                        <p class="text-xs text-gray-500 font-bold">选择一个你感兴趣的故事 Flow 开始互动吧！</p>
+                        <p class="text-xs text-gray-500 font-bold">每一份案卷，都是一个你不认识的人生。选一份，开始顶替。</p>
                     </div>
                 </div>
 
@@ -207,7 +202,7 @@
                     <!-- Random Select Button -->
                     <button onclick="selectRandomCase()" class="kawaii-btn bg-yellow-300 hover:bg-yellow-200 text-[#2d2d3a] font-extrabold text-sm px-5 py-2.5 rounded-2xl flex items-center justify-center gap-2 w-full sm:w-auto">
                         <i class="fa-solid fa-dice text-lg text-purple-600"></i>
-                        <span>Random (随机挑选)</span>
+                        <span>随机挑选</span>
                     </button>
                 </div>
             </div>
@@ -220,11 +215,6 @@
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="py-4 text-center text-xs font-bold text-gray-500 border-t-2 border-[#2d2d3a]/10 bg-white/40">
-        <p>ChatFlow Mini Game • Pure JS & Lightweight Design • Inspired by KawaiiLogos</p>
-    </footer>
-
     <!-- INTERACTION MODAL (Simulates Entering a Game Flow) -->
     <div id="game-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
         <div class="kawaii-card bg-white max-w-md w-full rounded-3xl p-6 sm:p-8 relative transform scale-90 transition-transform duration-300" id="modal-card">
@@ -236,14 +226,6 @@
 
             <!-- Modal Content Area -->
             <div class="text-center">
-                <div id="modal-icon-bg" class="w-20 h-20 mx-auto mb-4 rounded-3xl border-3 border-[#2d2d3a] flex items-center justify-center text-4xl shadow-[4px_4px_0px_#2d2d3a]">
-                    <span id="modal-icon">🤖</span>
-                </div>
-
-                <div class="inline-block bg-purple-100 text-purple-700 text-xs font-extrabold px-3 py-1 rounded-full border border-purple-300 mb-2" id="modal-tag">
-                    ChatFlow Stage
-                </div>
-
                 <h3 id="modal-title" class="text-2xl font-black text-[#2d2d3a] mb-2">
                     Case Title
                 </h3>
@@ -357,18 +339,8 @@
 
                 card.innerHTML = `
                     <div>
-                        <!-- Top Header inside Card -->
-                        <div class="flex items-start justify-between gap-3 mb-3">
-                            <div class="w-12 h-12 rounded-2xl ${item.color} border-2 border-[#2d2d3a] flex items-center justify-center text-2xl shadow-[3px_3px_0px_#2d2d3a] transform group-hover:rotate-6 transition-transform">
-                                ${item.icon}
-                            </div>
-                            <span class="text-xs font-black px-3 py-1 rounded-full border-2 border-[#2d2d3a] bg-gray-100 text-[#2d2d3a]">
-                                ${item.tag}
-                            </span>
-                        </div>
-
                         <!-- Title & Subtitle -->
-                        <h3 class="text-lg font-black text-[#2d2d3a] group-hover:text-pink-500 transition-colors flex items-center gap-2">
+                        <h3 class="text-2xl sm:text-3xl font-black text-[#2d2d3a] group-hover:text-pink-500 transition-colors mb-1">
                             ${item.title}
                         </h3>
                         <p class="text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-wide">${item.subtitle}</p>
@@ -438,14 +410,10 @@
             const modalCard = document.getElementById('modal-card');
 
             // 填入数据
-            document.getElementById('modal-icon').innerText = item.icon;
-            document.getElementById('modal-icon-bg').className = `w-20 h-20 mx-auto mb-4 rounded-3xl border-3 border-[#2d2d3a] flex items-center justify-center text-4xl shadow-[4px_4px_0px_#2d2d3a] ${item.color}`;
-            document.getElementById('modal-tag').innerText = item.tag;
             document.getElementById('modal-title').innerText = item.title;
             document.getElementById('modal-desc').innerText = item.desc;
             
             document.getElementById('modal-meta').innerHTML = `
-                <div class="flex justify-between"><span>副标题:</span> <span>${item.subtitle}</span></div>
                 <div class="flex justify-between"><span>预估回合:</span> <span>${item.turns}</span></div>
                 <div class="flex justify-between"><span>剧本难度:</span> <span class="text-amber-500">${item.difficulty}</span></div>
             `;
