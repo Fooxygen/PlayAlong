@@ -252,79 +252,41 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // 预设的 ChatFlow Case 数据表
-        const casesData = [
-            {
-                id: 'case-1',
-                title: '猫咪解密侦探社',
-                subtitle: 'Detective Cat Case',
-                desc: '你将与一只智商高达200的英短猫侦探合作，破解密室消失的鱼干之谜！',
-                icon: '🐱',
-                color: 'bg-pink-300',
-                tag: '解谜推理',
-                difficulty: '★☆☆☆☆',
-                turns: '约 5-8 轮对话'
-            },
-            {
-                id: 'case-2',
-                title: '赛博夜市烤串摊',
-                subtitle: 'Cyberpunk BBQ Stall',
-                desc: '2077年的赛博夜市，你作为摊主需要用特调AI酱料满足各种奇怪客人的需求。',
-                icon: '🍢',
-                color: 'bg-yellow-300',
-                tag: '经营模拟',
-                difficulty: '★★☆☆☆',
-                turns: '约 8-12 轮对话'
-            },
-            {
-                id: 'case-3',
-                title: '魔法学园末等生',
-                subtitle: 'Magic Academy Apprentice',
-                desc: '施咒总是炸锅？通过正确的魔法吟唱对话完成期末考察，别把教室点着了！',
-                icon: '🧙‍♀️',
-                color: 'bg-purple-300',
-                tag: '奇幻角色扮演',
-                difficulty: '★★★☆☆',
-                turns: '约 10-15 轮对话'
-            },
-            {
-                id: 'case-4',
-                title: '社恐机器人的面试',
-                subtitle: 'Social Anxiety Robot',
-                desc: '指导面试极其紧张的代号 X-09 机器人，帮它克服卡顿并顺利拿到 Offer！',
-                icon: '🤖',
-                color: 'bg-cyan-300',
-                tag: '温情养成',
-                difficulty: '★★☆☆☆',
-                turns: '约 6-10 轮对话'
-            },
-            {
-                id: 'case-5',
-                title: '星际空间站求生',
-                subtitle: 'Interstellar Survival',
-                desc: '警报！主控AI陷入了哲学思考并拒绝开门，你需要劝说它重新恢复系统运行。',
-                icon: '🚀',
-                color: 'bg-indigo-300',
-                tag: '科幻说服',
-                difficulty: '★★★★☆',
-                turns: '自由对话'
-            },
-            {
-                id: 'case-6',
-                title: '超时空咖啡馆',
-                subtitle: 'Time Traveler Coffee',
-                desc: '接待来自不同历史时代的客人，聆听他们的烦恼并为你调制一杯特制咖啡。',
-                icon: '☕',
-                color: 'bg-emerald-300',
-                tag: '治愈系',
-                difficulty: '★☆☆☆☆',
-                turns: '无限模式'
-            }
-        ];
+        // Case 列表由后端 /api/cases 提供
+        let casesData = [];
 
-        // 页面初始化：渲染 Case 列表
+        async function loadCases() {
+            const container = document.getElementById('cases-grid');
+            container.innerHTML = `<div class="col-span-full text-center text-sm font-bold text-gray-500 py-10">正在调取案卷……</div>`;
+
+            try {
+                const response = await fetch('/api/cases');
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || '加载失败');
+
+                casesData = (data.cases || []).map(toCaseCard);
+                renderCases();
+            } catch (error) {
+                container.innerHTML = `<div class="col-span-full text-center text-sm font-bold text-red-500 py-10">无法加载案卷：${error.message}</div>`;
+            }
+        }
+
+        function toCaseCard(item) {
+            const difficulty = Math.max(1, Math.min(5, Number(item.difficulty) || 1));
+
+            return {
+                id: item.pack_id,
+                title: item.title,
+                subtitle: [item.name, item.occupation].filter(Boolean).join(' · '),
+                desc: item.description || item.disappearance || '',
+                difficulty: '★'.repeat(difficulty) + '☆'.repeat(5 - difficulty),
+                turns: item.rounds ? `约 ${item.rounds} 轮` : '回合未知'
+            };
+        }
+
+        // 页面初始化：加载 Case 列表
         document.addEventListener('DOMContentLoaded', () => {
-            renderCases();
+            loadCases();
         });
 
         // 渲染 Case 列表到 DOM
@@ -396,6 +358,8 @@
 
         // 随机选择一个 Case (Random 按钮)
         function selectRandomCase() {
+            if (!casesData.length) return;
+
             // 给按钮加个随机动画效果感
             const randomIndex = Math.floor(Math.random() * casesData.length);
             const selectedCase = casesData[randomIndex];
