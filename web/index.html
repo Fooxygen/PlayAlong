@@ -183,6 +183,14 @@
         let selectedCase = null;
         let conversationId = "";
         let chatSending = false;
+        let lastSpeaker = "";
+
+        const TYPE_SPEED = 26;
+        const NARRATION_SPEED = 22;
+        const EXPRESSION_SPEED = 22;
+        const MESSAGE_GAP = 1000;
+        const EXPRESSION_GAP = 650;
+        const SPEAKER_GAP = 400;
 
         async function loadCases() {
             const container = document.getElementById('cases-grid');
@@ -350,6 +358,7 @@
             document.getElementById('chat-title').textContent = selectedCase.title;
             document.getElementById('chat-messages').innerHTML = '';
             conversationId = "";
+            lastSpeaker = "";
 
             showPage(
                 document.getElementById('page-cases'),
@@ -375,54 +384,155 @@
         }
 
         function parseMessage(raw) {
-            const match = raw.match(
-                /^([^（：:\n]{1,24})(?:（([^）\n]{1,24})）)?[：:]\s*([\s\S]*)$/
-            );
+            const scene = raw.match(/^[\[［【]([\s\S]*)[\]］】]$/);
 
-            if (!match) {
-                return { name: "", expression: "", text: raw.trim() };
+            if (scene) {
+                return {
+                    name: "",
+                    expression: "",
+                    text: scene[1].trim(),
+                    scene: true
+                };
             }
 
-            return {
-                name: match[1].trim(),
-                expression: (match[2] || "").trim(),
-                text: match[3].trim()
-            };
+            const withExpression = raw.match(
+                /^([^（：:\n，。！？、；…]{1,8})（([^）\n]{1,16})）[：:]\s*([\s\S]*)$/
+            );
+
+            if (withExpression) {
+                return {
+                    name: withExpression[1].trim(),
+                    expression: withExpression[2].trim(),
+                    text: withExpression[3].trim(),
+                    scene: false
+                };
+            }
+
+            const plain = raw.match(
+                /^([^（：:\n，。！？、；…]{1,6})[：:]\s*([\s\S]*)$/
+            );
+
+            if (plain) {
+                return {
+                    name: plain[1].trim(),
+                    expression: "",
+                    text: plain[2].trim(),
+                    scene: false
+                };
+            }
+
+            return { name: "", expression: "", text: raw.trim(), scene: false };
         }
 
         function wait(ms) {
             return new Promise((resolve) => setTimeout(resolve, ms));
         }
 
-        function addExpressionMessage(name, expression) {
+        function typeText(element, text, speed = 26) {
+            return new Promise((resolve) => {
+                const chars = Array.from(text);
+                let index = 0;
+
+                element.textContent = "";
+
+                const step = () => {
+                    if (index >= chars.length) {
+                        scrollChatToBottom();
+                        resolve();
+                        return;
+                    }
+
+                    element.textContent += chars[index];
+                    index += 1;
+
+                    if (index % 3 === 0) {
+                        scrollChatToBottom(false);
+                    }
+
+                    setTimeout(step, speed);
+                };
+
+                step();
+            });
+        }
+
+        function createInlineRow(className) {
             const list = document.getElementById('chat-messages');
             const row = document.createElement('div');
-            row.className = 'chat-expression';
-            row.textContent = `${name} ${expression}`;
+            row.className = className;
             list.appendChild(row);
             scrollChatToBottom();
+            return row;
+        }
+
+        function planAnswer(answer) {
+            const items = splitAnswer(answer).map((block) => ({
+                block,
+                ...parseMessage(block)
+            }));
+
+            const first = items[0];
+            if (
+                first &&
+                !first.scene &&
+                !first.expression &&
+                first.text.startsWith("你") &&
+                first.text.length >= 24
+            ) {
+                first.scene = true;
+                first.name = "";
+            }
+
+            let nextName = "";
+            for (let i = items.length - 1; i >= 0; i -= 1) {
+                if (items[i].name) {
+                    nextName = items[i].name;
+                }
+                items[i].owner = items[i].name || nextName;
+            }
+
+            return items;
         }
 
         async function addAnswerMessages(answer) {
-            const blocks = splitAnswer(answer);
-            let isFirst = true;
+            const items = planAnswer(answer);
 
-            for (const block of blocks) {
-                const message = parseMessage(block);
+            for (const item of items) {
+                const speakerChanged = Boolean(item.owner) && item.owner !== lastSpeaker;
 
-                if (!isFirst) {
-                    await wait(1000);
-                }
-                isFirst = false;
-
-                if (message.name && message.expression) {
-                    addExpressionMessage(message.name, message.expression);
-                    await wait(1000);
+                if (item.owner) {
+                    lastSpeaker = item.owner;
                 }
 
-                addChatMessage("other", message.text || block, {
-                    name: message.name
-                });
+                if (speakerChanged) {
+                    await wait(SPEAKER_GAP);
+                }
+
+                if (!item.name) {
+                    if (item.owner && !speakerChanged) {
+                        continue;
+                    }
+
+                    const narration = createInlineRow('chat-narration');
+                    const narrationText = item.scene ? item.text : item.block;
+                    await typeText(narration, `[${narrationText}]`, NARRATION_SPEED);
+                    await wait(MESSAGE_GAP);
+                    continue;
+                }
+
+                if (item.expression) {
+                    const expression = createInlineRow('chat-expression');
+                    await typeText(
+                        expression,
+                        `[${item.name}${item.expression}]`,
+                        EXPRESSION_SPEED
+                    );
+                    await wait(EXPRESSION_GAP);
+                }
+
+                const bubble = createChatRow('other', { name: item.name });
+                await typeText(bubble, item.text || item.block, TYPE_SPEED);
+                await wait(MESSAGE_GAP);
             }
         }
 
@@ -494,6 +604,7 @@
 
             conversationId = "";
             selectedCase = null;
+            lastSpeaker = "";
             showPage(pageChat, pageCases);
 
             setTimeout(() => {
@@ -503,17 +614,17 @@
             }, 450);
         }
 
-        function scrollChatToBottom() {
+        function scrollChatToBottom(smooth = true) {
             const list = document.getElementById('chat-messages');
             requestAnimationFrame(() => {
                 list.scrollTo({
                     top: list.scrollHeight,
-                    behavior: 'smooth'
+                    behavior: smooth ? 'smooth' : 'auto'
                 });
             });
         }
 
-        function addChatMessage(side, text, meta = {}) {
+        function createChatRow(side, meta = {}) {
             const list = document.getElementById('chat-messages');
             const row = document.createElement('div');
             row.className = side === 'me' ? 'chat-row chat-row-me' : 'chat-row';
@@ -527,13 +638,16 @@
 
             const bubble = document.createElement('div');
             bubble.className = `chat-bubble chat-bubble-${side}`;
-            bubble.textContent = text;
-            if (meta.expression) {
-                bubble.dataset.expression = meta.expression;
-            }
             row.appendChild(bubble);
 
             list.appendChild(row);
+            scrollChatToBottom();
+            return bubble;
+        }
+
+        function addChatMessage(side, text, meta = {}) {
+            const bubble = createChatRow(side, meta);
+            bubble.textContent = text;
             scrollChatToBottom();
         }
 

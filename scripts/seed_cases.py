@@ -18,7 +18,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CASES_DIR = REPO_ROOT / "cases" / "json"
 CASE_KIND = "playalong.case"
-DEFAULT_SCOPE_KEY = "playalong-case-library-v3"
+DEFAULT_SCOPE_KEY = "playalong-case-library-v4"
 DEFAULT_TITLE = "PlayAlong Case Library"
 DEFAULT_SUMMARY = "PlayAlong case library managed by scripts/seed_cases.py."
 DEFAULT_MAX_BYTES = 8192
@@ -52,6 +52,7 @@ NPC_KEYS = {
     "speech_style",
     "opening",
     "greeting_hint",
+    "intro",
     "questions",
     "facts",
 }
@@ -268,6 +269,7 @@ def validate_case(case: Any, source: Path, max_bytes: int) -> list[str]:
         check_string(npc["speech_style"], f"{npc_label}.speech_style", errors)
         check_string(npc["opening"], f"{npc_label}.opening", errors)
         check_string(npc["greeting_hint"], f"{npc_label}.greeting_hint", errors)
+        check_string(npc["intro"], f"{npc_label}.intro", errors)
         check_int(npc["age"], f"{npc_label}.age", errors, minimum=1)
         npc_id = npc.get("id")
         if isinstance(npc_id, str):
