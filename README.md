@@ -78,8 +78,8 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 | 文档 | 内容 |
 | - | - |
 | [`docs/deps.md`](./docs/deps.md) | 运行环境、软件与插件版本 |
-| [`docs/run.md`](./docs/run.md) | 依赖安装、配置、导入 DSL 与启动步骤 |
-| [`docs/verify.md`](./docs/verify.md) | 验证样例、操作顺序与运行证据 |
+| [`docs/configure.md`](./docs/configure.md) | PowerContext、Dify 与本地前端的配置 |
+| [`docs/run.md`](./docs/run.md) | 导入 DSL、初始化数据与启动步骤 |
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 

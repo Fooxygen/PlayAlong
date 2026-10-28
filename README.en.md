@@ -81,8 +81,8 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 | Document | Content |
 | - | - |
 | [`docs/deps.md`](./docs/deps.md) | Runtime environment, software and plugin versions |
-| [`docs/run.md`](./docs/run.md) | Installation, configuration, DSL import and startup |
-| [`docs/verify.md`](./docs/verify.md) | Verification steps, expected behaviour and evidence |
+| [`docs/configure.md`](./docs/configure.md) | PowerContext, Dify and frontend configuration |
+| [`docs/run.md`](./docs/run.md) | DSL import, data initialization and startup |
 
 > The documents are written in Chinese.
 
