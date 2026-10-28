@@ -54,7 +54,7 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 | 目录 | 内容 |
 | - | - |
 | `cases/` | `pack01.md` 案卷作者源、`pack01.json` 运行时数据 |
-| `docs/` | `deps.md`、`configure.md`、`run.md` |
+| `docs/` | `deps.md`、`run.md` |
 | `ifpkg/` | `PlayAlong.ifpkg`，Dify 应用包 |
 | `scripts/` | `seed_cases.py`，案卷校验与 PowerContext 写入 |
 | `web/` | `index.html`、`server.py` 与前端资源 |
@@ -78,8 +78,7 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 | 文档 | 内容 |
 | - | - |
 | [`docs/deps.md`](./docs/deps.md) | 运行环境、软件与插件版本 |
-| [`docs/configure.md`](./docs/configure.md) | PowerContext、Dify 与本地前端的配置 |
-| [`docs/run.md`](./docs/run.md) | 导入 DSL、初始化数据与启动步骤 |
+| [`docs/run.md`](./docs/run.md) | PowerContext、Dify 与本地前端的配置、导入 DSL、初始化数据与启动步骤 |
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
