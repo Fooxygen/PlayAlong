@@ -53,11 +53,11 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 
 | 目录 | 内容 |
 | - | - |
-| `cases/` | 案卷作者源（Markdown）与运行时数据（JSON） |
-| `docs/` | 依赖、配置与启动、验证样例 |
-| `ifpkg/` | Dify 应用包 |
-| `scripts/` | 案卷校验与 PowerContext 初始化脚本 |
-| `web/` | 本地前端与 Dify / PowerContext 代理 |
+| `cases/` | `pack01.md` 案卷作者源、`pack01.json` 运行时数据 |
+| `docs/` | `deps.md`、`configure.md`、`run.md` |
+| `ifpkg/` | `PlayAlong.ifpkg`，Dify 应用包 |
+| `scripts/` | `seed_cases.py`，案卷校验与 PowerContext 写入 |
+| `web/` | `index.html`、`server.py` 与前端资源 |
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 

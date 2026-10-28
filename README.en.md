@@ -58,9 +58,9 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 | - | - |
 | `cases/` | Case sources (Markdown) and runtime data (JSON) |
 | `docs/` | Dependencies, configuration, startup and verification |
-| `dsl/` | Dify app package and DSL |
-| `scripts/` | Case validation and PowerContext seeding |
-| `web/` | Local frontend and Dify / PowerContext proxy |
+| `ifpkg/` | `PlayAlong.ifpkg`, Dify app package |
+| `scripts/` | `seed_cases.py`, case validation and PowerContext seeding |
+| `web/` | `index.html`, `server.py` and frontend assets |
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
@@ -94,7 +94,7 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 
 ```text
 1. Initialize PowerContext and seed the cases
-2. Import the Dify app from dsl/
+2. Import the Dify app from ifpkg/
 3. Configure the Dify environment variables
 4. Start the local frontend
 ```
