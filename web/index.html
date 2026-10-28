@@ -103,6 +103,9 @@
                         <div class="text-xs sm:text-sm font-black tracking-widest text-pink-500 uppercase">Current Case</div>
                         <h2 id="chat-title" class="text-xl sm:text-2xl font-black text-[#2d2d3a] truncate">对话</h2>
                     </div>
+                    <span id="npc-count" class="shrink-0 text-xs font-black text-emerald-600 bg-white border-2 border-emerald-300 rounded-full px-3 py-1">
+                        已见面 0 人
+                    </span>
                 </header>
 
                 <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-[#fdfbfb]/80"></div>
@@ -121,6 +124,28 @@
                     </button>
                 </form>
             </div>
+
+            <aside id="memory-panel" class="memory-panel flex flex-col bg-white/90 border-[3px] border-[#2d2d3a] rounded-3xl shadow-[8px_8px_0px_#2d2d3a] overflow-hidden">
+                <header class="flex items-center justify-between gap-3 px-4 py-3 border-b-[3px] border-[#2d2d3a] bg-[#f3eeff]">
+                    <div class="min-w-0">
+                        <div class="text-xs font-black tracking-widest text-purple-400 uppercase">Memory</div>
+                        <h2 class="text-lg sm:text-xl font-black text-[#2d2d3a]">记忆目录</h2>
+                    </div>
+                    <span id="memory-count" class="shrink-0 text-xs font-black text-purple-600 bg-white border-2 border-purple-300 rounded-full px-3 py-1">
+                        剩余 3 次
+                    </span>
+                </header>
+
+                <div id="memory-list" class="memory-list flex-1 overflow-y-auto p-3 space-y-2 bg-[#fdfbfb]/80">
+                    <div class="text-center text-xs font-bold text-gray-400 py-8">正在整理记忆……</div>
+                </div>
+
+                <footer class="px-4 py-3 border-t-[3px] border-[#2d2d3a] bg-white">
+                    <p class="text-[11px] font-bold leading-relaxed text-gray-400">
+                        只有轮到你回答时才能翻阅。翻开一次，少一次。
+                    </p>
+                </footer>
+            </aside>
 
             <aside id="ending-panel" class="ending-panel flex flex-col bg-white/95 border-[3px] border-[#2d2d3a] rounded-3xl shadow-[8px_8px_0px_#2d2d3a] overflow-hidden">
                 <header class="px-5 py-4 border-b-[3px] border-[#2d2d3a] bg-pink-100">
@@ -184,6 +209,17 @@
         let conversationId = "";
         let chatSending = false;
         let lastSpeaker = "";
+
+        const MEMORY_TOTAL = 3;
+        const memoryState = {
+            packId: "",
+            items: [],
+            revealed: new Set(),
+            remaining: MEMORY_TOTAL,
+            loading: false
+        };
+
+        const seenNpcs = new Set();
 
         const TYPE_SPEED = 26;
         const NARRATION_SPEED = 22;
@@ -359,14 +395,194 @@
             document.getElementById('chat-messages').innerHTML = '';
             conversationId = "";
             lastSpeaker = "";
+            seenNpcs.clear();
+            updateNpcCount();
+            document.getElementById('chat-input').disabled = false;
+            document.getElementById('chat-send').disabled = false;
 
             showPage(
                 document.getElementById('page-cases'),
                 pageChat
             );
 
+            loadMemory(selectedCase.id);
             await submitChat(selectedCase.id, true);
             document.getElementById('chat-input').focus();
+        }
+
+        async function loadMemory(packId) {
+            memoryState.packId = packId;
+            memoryState.items = [];
+            memoryState.revealed = new Set();
+            memoryState.remaining = MEMORY_TOTAL;
+            memoryState.loading = false;
+            updateMemoryCount();
+
+            const list = document.getElementById('memory-list');
+            list.innerHTML = '';
+            const loading = document.createElement('div');
+            loading.className = 'text-center text-xs font-bold text-gray-400 py-8';
+            loading.textContent = '正在整理记忆……';
+            list.appendChild(loading);
+
+            try {
+                const response = await fetch(
+                    `/api/memory?pack_id=${encodeURIComponent(packId)}`
+                );
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '加载失败');
+                }
+
+                memoryState.items = Array.isArray(data.items) ? data.items : [];
+                renderMemoryList();
+            } catch (error) {
+                list.innerHTML = '';
+                const failed = document.createElement('div');
+                failed.className = 'text-center text-xs font-bold text-red-500 py-8';
+                failed.textContent = `记忆加载失败：${error.message}`;
+                list.appendChild(failed);
+            }
+        }
+
+        function updateMemoryCount() {
+            const counter = document.getElementById('memory-count');
+            if (!counter) {
+                return;
+            }
+
+            counter.textContent =
+                memoryState.remaining > 0
+                    ? `剩余 ${memoryState.remaining} 次`
+                    : '已用完';
+
+            counter.classList.toggle('memory-count-empty', memoryState.remaining <= 0);
+        }
+
+        function updateNpcCount() {
+            const counter = document.getElementById('npc-count');
+            if (!counter) {
+                return;
+            }
+
+            counter.textContent = `已见面 ${seenNpcs.size} 人`;
+        }
+
+        function renderMemoryList() {
+            const list = document.getElementById('memory-list');
+            list.innerHTML = '';
+
+            if (!memoryState.items.length) {
+                const empty = document.createElement('div');
+                empty.className = 'text-center text-xs font-bold text-gray-400 py-8';
+                empty.textContent = '没有可翻阅的记忆。';
+                list.appendChild(empty);
+                return;
+            }
+
+            for (const item of memoryState.items) {
+                const revealed = memoryState.revealed.has(item.id);
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+
+                if (revealed) {
+                    card.classList.add('memory-card-open');
+                } else if (memoryState.remaining <= 0) {
+                    card.classList.add('memory-card-locked');
+                }
+
+                const title = document.createElement('div');
+                title.className = 'memory-card-title';
+                title.textContent = item.title || '一段记忆';
+                card.appendChild(title);
+
+                if (revealed) {
+                    const body = document.createElement('div');
+                    body.className = 'memory-card-body';
+                    body.textContent = item.text || '';
+                    card.appendChild(body);
+                } else {
+                    const hint = document.createElement('div');
+                    hint.className = 'memory-card-hint';
+                    hint.textContent =
+                        memoryState.remaining > 0 ? '点击翻阅' : '想不起来了';
+                    card.appendChild(hint);
+
+                    if (memoryState.remaining > 0) {
+                        card.addEventListener('click', () => recallMemory(item.id));
+                    }
+                }
+
+                list.appendChild(card);
+            }
+
+            updateMemoryAvailability();
+        }
+
+        function updateMemoryAvailability() {
+            const page = document.getElementById('page-chat');
+            const ending = page && page.classList.contains('ending-open');
+            const locked =
+                chatSending ||
+                memoryState.loading ||
+                memoryState.remaining <= 0 ||
+                ending;
+
+            document.querySelectorAll('.memory-card:not(.memory-card-open)').forEach((card) => {
+                card.classList.toggle('memory-card-disabled', locked);
+            });
+        }
+
+        async function recallMemory(fragmentId) {
+            const page = document.getElementById('page-chat');
+            const ending = page && page.classList.contains('ending-open');
+
+            if (chatSending || memoryState.loading || ending || memoryState.remaining <= 0) {
+                return;
+            }
+
+            if (memoryState.revealed.has(fragmentId)) {
+                return;
+            }
+
+            memoryState.loading = true;
+            updateMemoryAvailability();
+
+            try {
+                const response = await fetch('/api/memory/recall', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pack_id: memoryState.packId,
+                        fragment_id: fragmentId
+                    })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '翻阅失败');
+                }
+
+                const item = memoryState.items.find((entry) => entry.id === fragmentId);
+                if (item) {
+                    item.text = data.text || '';
+                }
+
+                memoryState.revealed.add(fragmentId);
+                memoryState.remaining = Math.max(0, memoryState.remaining - 1);
+                updateMemoryCount();
+                renderMemoryList();
+            } catch (error) {
+                const list = document.getElementById('memory-list');
+                const failed = document.createElement('div');
+                failed.className = 'text-center text-xs font-bold text-red-500 py-2';
+                failed.textContent = `翻阅失败：${error.message}`;
+                list.appendChild(failed);
+            } finally {
+                memoryState.loading = false;
+                updateMemoryAvailability();
+            }
         }
 
         function leaveChat() {
@@ -502,6 +718,8 @@
 
                 if (item.owner) {
                     lastSpeaker = item.owner;
+                    seenNpcs.add(item.owner);
+                    updateNpcCount();
                 }
 
                 if (speakerChanged) {
@@ -596,6 +814,10 @@
             renderEndingMarkdown(answer, content);
             content.scrollTop = 0;
             page.classList.add("ending-open");
+
+            document.getElementById("chat-input").disabled = true;
+            document.getElementById("chat-send").disabled = true;
+            updateMemoryAvailability();
         }
 
         function replayGame() {
@@ -605,6 +827,8 @@
             conversationId = "";
             selectedCase = null;
             lastSpeaker = "";
+            seenNpcs.clear();
+            updateNpcCount();
             showPage(pageChat, pageCases);
 
             setTimeout(() => {
@@ -612,6 +836,14 @@
                 document.getElementById("ending-content").innerHTML = "";
                 document.getElementById("chat-messages").innerHTML = "";
             }, 450);
+
+            memoryState.packId = "";
+            memoryState.items = [];
+            memoryState.revealed = new Set();
+            memoryState.remaining = MEMORY_TOTAL;
+            memoryState.loading = false;
+            updateMemoryCount();
+            document.getElementById("memory-list").innerHTML = "";
         }
 
         function scrollChatToBottom(smooth = true) {
@@ -652,8 +884,13 @@
         }
 
         function setChatBusy(busy) {
-            document.getElementById('chat-input').disabled = busy;
-            document.getElementById('chat-send').disabled = busy;
+            const ending = document
+                .getElementById('page-chat')
+                .classList.contains('ending-open');
+
+            document.getElementById('chat-input').disabled = busy || ending;
+            document.getElementById('chat-send').disabled = busy || ending;
+            updateMemoryAvailability();
         }
 
         async function submitChat(text, isStart = false) {

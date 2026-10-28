@@ -5,7 +5,7 @@
 - pack_id: pack01
 - title: 旧钟楼
 - version: 1
-- description: 旧钟楼街的钟表铺关了三天。沈砚失踪了，认识他的人却都在等你回来。
+- description: 今天是 11 月 6 日。旧钟楼街的钟表铺关了三天。沈砚失踪了，认识他的人却都在等你回来。
 - difficulty: 3
 - rounds: 6
 
@@ -16,7 +16,7 @@
 - occupation: 钟表修复师，在旧城钟楼街有间自己的铺子
 - personality: 寡言，较真，给人修东西的时候话会变多
 - appearance: 圆脸，左眉骨一道旧疤，笑起来左边少一颗牙——和你几乎一样
-- disappearance: 去年 11 月 3 日夜里没有回家，铺子锁着，公寓里留着一件没穿的外套
+- disappearance: 11 月 3 日夜里没有回家，铺子锁着，公寓里留着一件没穿的外套
 - secret: 他没有失踪。是他替别人顶了罪名，人现在在城郊的疗养院里
 
 ## npcs
@@ -49,11 +49,11 @@
 
 - id: f11
 - topic: 行踪
-- text: 前天夜里他回来是凌晨两点多，鞋底沾着河堤边的泥。
+- text: 11 月 3 日夜里他回来是凌晨两点多，鞋底沾着河堤边的泥。
 - accepts: 回来得晚, 凌晨, 两点, 出去了, 加班, 城西
 - keywords: 凌晨, 两点, 泥, 回来, 前天夜里
 - weight: 2
-- reaction_if_missed: 「前天夜里你回来得挺晚，去哪儿了？」
+- reaction_if_missed: 「11 月 3 日夜里你回来得挺晚，去哪儿了？」
 - source_fragment: g2
 
 #### f12 三天没开门的铺子
@@ -92,7 +92,7 @@
 
 #### q1 没有兑现的约定
 
-- content: 我们说好那天去看海，你没来，也没接电话。
+- content: 我们说好 11 月 2 号去看海，你没来，也没接电话。
 - topic: 约会
 - targets: f21
 
@@ -110,7 +110,7 @@
 - accepts: 那天没去成, 加班, 堵车, 生病, 忘了
 - keywords: 看海, 约定, 那天, 半夜, 没接电话
 - weight: 3
-- reaction_if_missed: 「我们说好那天去看海，你没来，也没接电话。」
+- reaction_if_missed: 「我们说好 11 月 2 号去看海，你没来，也没接电话。」
 - source_fragment: g1
 
 #### f22 失踪前的话
@@ -149,7 +149,7 @@
 
 #### q1 十一月三号的晚上
 
-- content: 十一月三号晚上十点到十二点，你在哪？
+- content: 11 月 3 号晚上十点到十二点，监控最后一次拍到你的那晚，你在哪？
 - topic: 时间线
 - targets: f31
 
@@ -167,7 +167,7 @@
 - accepts: 在家, 加班, 不知道, 没印象, 河堤
 - keywords: 十一, 三号, 晚上, 十点, 十二点, 监控, 河堤
 - weight: 3
-- reaction_if_missed: 「监控拍到你十一点四十出的门。」
+- reaction_if_missed: 「监控拍到你 11 月 3 号晚上十一点四十出的门。」
 - source_fragment: g2
 
 #### f32 姜北的表
@@ -194,10 +194,10 @@
 
 ## fragments
 
-### g1 海边的车票
+### g1 一张车票
 
 - id: g1
-- title: 海边的车票
+- title: 一张车票
 - text: 11 月 1 号晚上我买了两张去海边的票，第二天早上退了一张。退票的时候手在抖。
 - certainty: accurate
 - keywords: 海边, 票, 退票, 11月1, 约会
@@ -207,30 +207,30 @@
 
 - id: g2
 - title: 鞋底的泥
-- text: 前天夜里我去了城西、河堤下面那条旧街。雨把路都泡烂了，走一步陷一下。
+- text: 11 月 3 号夜里我去了城西、河堤下面那条旧街。雨把路都泡烂了，走一步陷一下。
 - certainty: accurate
-- keywords: 城西, 河堤, 泥, 前天夜里, 旧街
+- keywords: 城西, 河堤, 泥, 11月3, 3号, 旧街
 
-### g3 椅背上的外套
+### g3 一件外套
 
 - id: g3
-- title: 椅背上的外套
+- title: 一件外套
 - text: 那件灰外套是我故意留下的。里面口袋有东西，不能带在身上。
 - certainty: accurate
 - keywords: 外套, 灰, 口袋, 留下, 椅背
 
-### g4 想一个人待几天
+### g4 一段托词
 
 - id: g4
-- title: 想一个人待几天
+- title: 一段托词
 - text: 最近确实出事了。不是我想躲，是我怕连累人。等事情过去我再回去。
 - certainty: accurate
 - keywords: 出事, 躲, 连累, 压力, 待几天
 
-### g5 姜北
+### g5 一块表
 
 - id: g5
-- title: 姜北
+- title: 一块表
 - text: 姜北那台表，我根本没见过。我只是收了他三成的钱，剩下的都在他手里。表根本没修。
 - certainty: inaccurate
 - keywords: 姜北, 表, 钱, 没修, 三成

@@ -18,7 +18,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CASES_DIR = REPO_ROOT / "cases" / "json"
 CASE_KIND = "playalong.case"
-DEFAULT_SCOPE_KEY = "playalong-case-library-v4"
+DEFAULT_SCOPE_KEY = "playalong-case-library-v8"
 DEFAULT_TITLE = "PlayAlong Case Library"
 DEFAULT_SUMMARY = "PlayAlong case library managed by scripts/seed_cases.py."
 DEFAULT_MAX_BYTES = 8192

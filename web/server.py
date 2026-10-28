@@ -14,7 +14,7 @@ import urllib.request
 from   http.server  import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from   pathlib      import Path
 from   typing       import Any
-from   urllib.parse import urlparse
+from   urllib.parse import parse_qs, urlparse
 
 WEB_DIR = Path(__file__).resolve().parent
 REPO_ROOT = WEB_DIR.parent
@@ -92,8 +92,8 @@ def post_json(url: str, payload: dict[str, Any], token: str) -> dict[str, Any]:
     return result
 
 
-def get_cases() -> list[dict[str, Any]]:
-    """Read the case catalog from PowerContext and return non-spoiler summaries."""
+def load_case_library() -> dict[str, dict[str, Any]]:
+    """Read the full case library from PowerContext, keyed by pack_id."""
 
     data = post_json(
         require_env("PC_URL").rstrip("/") + "/v1/memory/entries/list",
@@ -101,7 +101,7 @@ def get_cases() -> list[dict[str, Any]]:
         require_env("PC_TOKEN"),
     )
 
-    cases: list[dict[str, Any]] = []
+    library: dict[str, dict[str, Any]] = {}
     for entry in data.get("entries", []):
         if entry.get("kind") != "playalong.case":
             continue
@@ -115,6 +115,18 @@ def get_cases() -> list[dict[str, Any]]:
         except json.JSONDecodeError:
             continue
 
+        pack_id = str(case.get("pack_id", ""))
+        if pack_id:
+            library[pack_id] = case
+
+    return library
+
+
+def get_cases() -> list[dict[str, Any]]:
+    """Read the case catalog from PowerContext and return non-spoiler summaries."""
+
+    cases: list[dict[str, Any]] = []
+    for case in load_case_library().values():
         profile = case.get("profile")
         if not isinstance(profile, dict):
             profile = {}
@@ -134,6 +146,47 @@ def get_cases() -> list[dict[str, Any]]:
 
     cases.sort(key=lambda item: item["pack_id"])
     return cases
+
+
+def get_memory_catalog(pack_id: str) -> dict[str, Any]:
+    """Return fragment titles only. Fragment text must be recalled one by one."""
+
+    case = load_case_library().get(pack_id)
+    if not case:
+        raise ApiError(404, f"Unknown case: {pack_id}")
+
+    items: list[dict[str, str]] = []
+    for fragment in case.get("fragments") or []:
+        if not isinstance(fragment, dict):
+            continue
+        items.append(
+            {
+                "id": str(fragment.get("id", "")),
+                "title": str(fragment.get("title", "")),
+            }
+        )
+
+    return {"pack_id": pack_id, "items": items}
+
+
+def recall_memory(pack_id: str, fragment_id: str) -> dict[str, str]:
+    """Return the text of a single fragment."""
+
+    case = load_case_library().get(pack_id)
+    if not case:
+        raise ApiError(404, f"Unknown case: {pack_id}")
+
+    for fragment in case.get("fragments") or []:
+        if not isinstance(fragment, dict):
+            continue
+        if fragment.get("id") == fragment_id:
+            return {
+                "id": fragment_id,
+                "title": str(fragment.get("title", "")),
+                "text": str(fragment.get("text", "")),
+            }
+
+    raise ApiError(404, f"Unknown fragment: {fragment_id}")
 
 
 def chat(query: str, conversation_id: str) -> dict[str, str]:
@@ -196,7 +249,8 @@ class Handler(SimpleHTTPRequestHandler):
         return body
 
     def do_GET(self) -> None:
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
 
         if path == "/api/health":
             self.reply({"ok": True})
@@ -209,6 +263,16 @@ class Handler(SimpleHTTPRequestHandler):
                 self.reply({"error": error.message}, error.status)
             return
 
+        if path == "/api/memory":
+            try:
+                pack_id = parse_qs(parsed.query).get("pack_id", [""])[0].strip()
+                if not pack_id:
+                    raise ApiError(400, "pack_id must not be empty")
+                self.reply(get_memory_catalog(pack_id))
+            except ApiError as error:
+                self.reply({"error": error.message}, error.status)
+            return
+
         if path == "/" and not (WEB_DIR / "index.html").is_file():
             self.reply({"error": "Frontend is not ready"}, 503)
             return
@@ -216,7 +280,23 @@ class Handler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self) -> None:
-        if urlparse(self.path).path != "/api/chat":
+        path = urlparse(self.path).path
+
+        if path == "/api/memory/recall":
+            try:
+                body = self.read_json()
+                pack_id = str(body.get("pack_id", "")).strip()
+                fragment_id = str(body.get("fragment_id", "")).strip()
+                if not pack_id or not fragment_id:
+                    raise ApiError(400, "pack_id and fragment_id must not be empty")
+                self.reply(recall_memory(pack_id, fragment_id))
+            except ApiError as error:
+                self.reply({"error": error.message}, error.status)
+            except Exception:
+                self.reply({"error": "Internal server error"}, 500)
+            return
+
+        if path != "/api/chat":
             self.reply({"error": "Not found"}, 404)
             return
 
