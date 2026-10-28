@@ -5,8 +5,6 @@
 
 <div align="center">
 
-  <!-- TODO: 替换为正式 LOGO -->
-  <img src="brand_playalong.svg" alt="PlayAlong" style="margin=0">
   <h3 align="center">PlayAlong</h3>
   <p align="center">
     你顶替了一个失踪的人，手里只有他不完整的记忆。

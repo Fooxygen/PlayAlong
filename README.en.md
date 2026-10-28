@@ -5,8 +5,6 @@ English
 
 <div align="center">
 
-  <!-- TODO: replace with the final logo -->
-  <img src="docs/images/brand_playalong.svg" alt="PlayAlong" style="margin=0">
   <h3 align="center">PlayAlong</h3>
   <p align="center">
     You take the place of a missing person, with nothing but his incomplete memories.
