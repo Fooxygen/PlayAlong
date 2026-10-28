@@ -3,112 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatFlow - Kawaii Game Hub</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Noto Sans JP & Rounded Mplus 1c for Kawaii Typography -->
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Noto+Sans+SC:wght@500;700;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <title>PlayAlong</title>
+    <!-- Local compiled CSS -->
+    <link rel="stylesheet" href="assets/css/app.css">
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
 
-    <style>
-        body {
-            font-family: 'M PLUS Rounded 1c', 'Noto Sans SC', 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            background-attachment: fixed;
-            overflow-x: hidden;
-            user-select: none;
-        }
-
-        /* Kawaii Grid Pattern Background */
-        .bg-kawaii-pattern {
-            background-color: #f7f4ff;
-            background-image: 
-                radial-gradient(#e0d5ff 2px, transparent 2px),
-                radial-gradient(#e0d5ff 2px, #f7f4ff 2px);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-        }
-
-        /* Kawaii Thick Border & Pop Shadow */
-        .kawaii-card {
-            border: 3.5px solid #2d2d3a;
-            box-shadow: 6px 6px 0px #2d2d3a;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .kawaii-card:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 9px 9px 0px #2d2d3a;
-        }
-
-        .kawaii-btn {
-            border: 3.5px solid #2d2d3a;
-            box-shadow: 4px 4px 0px #2d2d3a;
-            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .kawaii-btn:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #2d2d3a;
-        }
-
-        .kawaii-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #2d2d3a;
-        }
-
-        /* Float animation for main logo */
-        @keyframes kawaii-float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(1.5deg); }
-        }
-
-        .animate-float {
-            animation: kawaii-float 4s ease-in-out infinite;
-        }
-
-        /* Pulse glow animation */
-        @keyframes kawaii-pulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
-
-        .animate-pulse-glow {
-            animation: kawaii-pulse 3s ease-in-out infinite;
-        }
-
-        /* Page transition styles */
-        .page-view {
-            grid-area: 1 / 1;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .page-hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.95);
-        }
-
-        .page-visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f0f7;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #c3b5f5;
-            border-radius: 10px;
-            border: 2px solid #2d2d3a;
-        }
-    </style>
 </head>
 <body class="bg-kawaii-pattern min-h-screen text-[#2d2d3a] flex flex-col justify-between relative overflow-x-hidden">
 
@@ -141,7 +41,7 @@
 
                     <!-- Icon & Title Combo -->
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-pink-400 rounded-2xl border-3 border-[#2d2d3a] flex items-center justify-center text-white text-2xl sm:text-3xl shadow-[3px_3px_0px_#2d2d3a] transform -rotate-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-pink-400 rounded-2xl border-[3px] border-[#2d2d3a] flex items-center justify-center text-white text-2xl sm:text-3xl shadow-[3px_3px_0px_#2d2d3a] transform -rotate-6">
                             <i class="fa-solid fa-comments"></i>
                         </div>
                         <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-[#2d2d3a] drop-shadow-sm">
@@ -158,7 +58,7 @@
 
             <!-- Description -->
             <p class="text-gray-600 font-bold text-sm sm:text-base max-w-md mt-6 mb-10 leading-relaxed bg-white/70 backdrop-blur-sm p-4 rounded-2xl border-2 border-[#2d2d3a]/20">
-                你顶替了一个失踪的人。用他不完整的记忆，应付所有认识他的人——别露馅。
+                你顶替了一个失踪的人，手里只有他不完整的记忆。别让他们发现，你根本不是他。
             </p>
 
             <!-- START BUTTON (Large Pill Button) -->
@@ -182,7 +82,7 @@
         <section id="page-cases" class="page-view page-hidden max-w-4xl w-full my-auto py-4">
             
             <!-- Top Action Header -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-white p-4 sm:p-5 rounded-3xl border-3 border-[#2d2d3a] shadow-[5px_5px_0px_#2d2d3a]">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-white p-4 sm:p-5 rounded-3xl border-[3px] border-[#2d2d3a] shadow-[5px_5px_0px_#2d2d3a]">
                 
                 <!-- Page Title -->
                 <div class="flex items-center gap-3">
