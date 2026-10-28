@@ -48,13 +48,25 @@
         textCtx.textAlign = "center";
         textCtx.textBaseline = "middle";
 
-        let size = height * 0.72;
-        const maxWidth = width * 0.84;
+        let size = height;
         textCtx.font = `900 ${size}px "Keinann Maru POP", "Maple Mono", sans-serif`;
 
-        const measured = textCtx.measureText(TEXT).width;
-        if (measured > maxWidth) {
-            size *= maxWidth / measured;
+        let metrics = textCtx.measureText(TEXT);
+        const glyphHeight =
+            (metrics.actualBoundingBoxAscent || 0) +
+            (metrics.actualBoundingBoxDescent || 0);
+
+        if (glyphHeight > 0) {
+            size *= (height * 0.9) / glyphHeight;
+        } else {
+            size = height * 0.82;
+        }
+        textCtx.font = `900 ${size}px "Keinann Maru POP", "Maple Mono", sans-serif`;
+
+        metrics = textCtx.measureText(TEXT);
+        const maxWidth = width * 0.9;
+        if (metrics.width > maxWidth) {
+            size *= maxWidth / metrics.width;
             textCtx.font = `900 ${size}px "Keinann Maru POP", "Maple Mono", sans-serif`;
         }
 
@@ -66,14 +78,14 @@
         return Math.max(min, Math.min(max, value));
     }
 
-    function drawWarpedArea(rows, cols, radius) {
+    function drawWarpedArea(rows, cols, halfWidth, halfHeight) {
         const cellWidth = width / cols;
         const cellHeight = height / rows;
 
-        const minCol = Math.max(0, Math.floor((pointerX - radius) / cellWidth));
-        const maxCol = Math.min(cols - 1, Math.floor((pointerX + radius) / cellWidth));
-        const minRow = Math.max(0, Math.floor((pointerY - radius) / cellHeight));
-        const maxRow = Math.min(rows - 1, Math.floor((pointerY + radius) / cellHeight));
+        const minCol = Math.max(0, Math.floor((pointerX - halfWidth) / cellWidth));
+        const maxCol = Math.min(cols - 1, Math.floor((pointerX + halfWidth) / cellWidth));
+        const minRow = Math.max(0, Math.floor((pointerY - halfHeight) / cellHeight));
+        const maxRow = Math.min(rows - 1, Math.floor((pointerY + halfHeight) / cellHeight));
 
         const left = Math.floor(minCol * cellWidth);
         const top = Math.floor(minRow * cellHeight);
@@ -83,8 +95,8 @@
         ctx.fillStyle = BACKGROUND;
         ctx.fillRect(left, top, right - left, bottom - top);
 
-        const maxShiftX = cellWidth;
-        const maxShiftY = cellHeight;
+        const maxShiftX = cellWidth * 15;
+        const maxShiftY = cellHeight * 20;
 
         for (let row = minRow; row <= maxRow; row++) {
             const y = Math.floor(row * cellHeight);
@@ -98,31 +110,44 @@
 
                 const centerX = x + blockWidth / 2;
                 const centerY = y + blockHeight / 2;
-                const distance = Math.hypot(centerX - pointerX, centerY - pointerY);
-                const falloff = Math.max(0, 1 - distance / radius);
+                const normX = Math.abs(centerX - pointerX) / halfWidth;
+                const normY = Math.abs(centerY - pointerY) / halfHeight;
+                const falloff = Math.max(0, 1 - Math.max(normX, normY));
 
                 let dx = 0;
                 let dy = 0;
 
                 if (falloff > 0 && intensity > 0.005) {
+                    const motionX = (velocityX + velocityY * 0.3) * 15;
+                    const motionY = (velocityY + velocityX * 0.3) * 20;
+
                     dx =
-                        clamp(velocityX * dpr * 1.4, -maxShiftX, maxShiftX) *
+                        clamp(motionX * dpr * 1.4, -maxShiftX, maxShiftX) *
                         falloff *
                         intensity;
                     dy =
-                        clamp(velocityY * dpr * 1.4, -maxShiftY, maxShiftY) *
+                        clamp(motionY * dpr * 1.4, -maxShiftY, maxShiftY) *
                         falloff *
                         intensity;
                 }
 
+                const sourceX = Math.max(
+                    0,
+                    Math.min(width - blockWidth, Math.round(x - dx))
+                );
+                const sourceY = Math.max(
+                    0,
+                    Math.min(height - blockHeight, Math.round(y + dy))
+                );
+
                 ctx.drawImage(
                     textCanvas,
-                    x,
-                    y,
+                    sourceX,
+                    sourceY,
                     blockWidth,
                     blockHeight,
-                    x + Math.round(dx),
-                    y + Math.round(dy),
+                    x,
+                    y,
                     blockWidth,
                     blockHeight
                 );
@@ -133,10 +158,12 @@
     function draw(now) {
         const moving = pointerActive && now - lastMoveAt < MOVING_WINDOW_MS;
         const target = moving ? 1 : 0;
+        const easeIn = moving ? 0.4 : 0.018;
+        const drag = moving ? 0.9 : 0.97;
 
-        intensity += (target - intensity) * (reduceMotion ? 1 : 0.18);
-        velocityX *= 0.82;
-        velocityY *= 0.82;
+        intensity += (target - intensity) * (reduceMotion ? 1 : easeIn);
+        velocityX *= drag;
+        velocityY *= drag;
 
         ctx.fillStyle = BACKGROUND;
         ctx.fillRect(0, 0, width, height);
@@ -145,8 +172,7 @@
         if (!reduceMotion && intensity > 0.005) {
             const rows = 8;
             const cols = 16;
-            const radius = Math.min(width, height) * 0.6;
-            drawWarpedArea(rows, cols, radius);
+            drawWarpedArea(rows, cols, width * 0.25, height * 0.25);
         }
 
         if (!reduceMotion && (moving || intensity > 0.01)) {
