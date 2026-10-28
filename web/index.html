@@ -911,7 +911,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         query: text,
-                        conversation_id: conversationId
+                        conversation_id: conversationId,
+                        pack_id: selectedCase ? selectedCase.id : ""
                     })
                 });
                 const data = await response.json();

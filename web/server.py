@@ -189,13 +189,13 @@ def recall_memory(pack_id: str, fragment_id: str) -> dict[str, str]:
     raise ApiError(404, f"Unknown fragment: {fragment_id}")
 
 
-def chat(query: str, conversation_id: str) -> dict[str, str]:
+def chat(query: str, conversation_id: str, pack_id: str = "") -> dict[str, str]:
     """Forward a player message to Dify Chatflow and return the conversation id."""
 
     data = post_json(
         require_env("DIFY_API_BASE").rstrip("/") + "/chat-messages",
         {
-            "inputs": {},
+            "inputs": {"pack_id": pack_id},
             "query": query,
             "response_mode": "blocking",
             "conversation_id": conversation_id,
@@ -304,11 +304,12 @@ class Handler(SimpleHTTPRequestHandler):
             body = self.read_json()
             query = str(body.get("query", "")).strip()
             conversation_id = str(body.get("conversation_id", "")).strip()
+            pack_id = str(body.get("pack_id", "")).strip()
 
             if not query:
                 raise ApiError(400, "query must not be empty")
 
-            self.reply(chat(query, conversation_id))
+            self.reply(chat(query, conversation_id, pack_id))
         except ApiError as error:
             self.reply({"error": error.message}, error.status)
         except Exception:
