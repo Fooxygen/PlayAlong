@@ -91,6 +91,37 @@
             </div>
         </section>
 
+        <!-- ================= PAGE 3: CHAT ================= -->
+        <section id="page-chat" class="page-view page-hidden page-gone w-full h-full flex items-center justify-center">
+            <div class="w-full sm:w-1/2 h-[90vh] flex flex-col bg-white/90 border-[3px] border-[#2d2d3a] rounded-3xl shadow-[8px_8px_0px_#2d2d3a] overflow-hidden">
+                <header class="flex items-center gap-3 px-4 sm:px-5 py-3 border-b-[3px] border-[#2d2d3a] bg-pink-100">
+                    <button onclick="leaveChat()" class="kawaii-btn w-9 h-9 shrink-0 bg-white hover:bg-gray-100 rounded-xl flex items-center justify-center text-[#2d2d3a]" title="返回案卷">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-xs sm:text-sm font-black tracking-widest text-pink-500 uppercase">Current Case</div>
+                        <h2 id="chat-title" class="text-xl sm:text-2xl font-black text-[#2d2d3a] truncate">对话</h2>
+                    </div>
+                </header>
+
+                <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-5 space-y-4 bg-[#fdfbfb]/80"></div>
+
+                <form id="chat-form" class="p-3 sm:p-4 border-t-[3px] border-[#2d2d3a] bg-white flex gap-2">
+                    <input
+                        id="chat-input"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="输入你的回答，按 Enter 发送……"
+                        class="flex-1 min-w-0 px-4 py-3 rounded-2xl border-[3px] border-[#2d2d3a] bg-[#f7f4ff] text-sm font-bold text-[#2d2d3a] outline-none focus:bg-white"
+                    >
+                    <button id="chat-send" type="submit" class="kawaii-btn bg-pink-400 hover:bg-pink-300 text-white font-black px-4 sm:px-5 py-3 rounded-2xl flex items-center justify-center gap-2">
+                        <span>发送</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
     </main>
 
     <!-- INTERACTION MODAL (Simulates Entering a Game Flow) -->
@@ -119,9 +150,9 @@
                     </div>
                 </div>
 
-                <button onclick="alert('🎮 准备就绪！这里将启动你的 ChatFlow 对话引擎逻辑。')" class="kawaii-btn bg-cyan-400 hover:bg-cyan-300 text-[#2d2d3a] font-black text-lg py-3.5 px-8 rounded-2xl w-full flex items-center justify-center gap-2">
+                <button onclick="startChatFromModal()" class="kawaii-btn bg-cyan-400 hover:bg-cyan-300 text-[#2d2d3a] font-black text-lg py-3.5 px-8 rounded-2xl w-full flex items-center justify-center gap-2">
                     <i class="fa-solid fa-comments"></i>
-                    <span>进入 ChatFlow 对话</span>
+                    <span>进入对话</span>
                 </button>
             </div>
         </div>
@@ -132,6 +163,9 @@
     <script>
         // Case 列表由后端 /api/cases 提供
         let casesData = [];
+        let selectedCase = null;
+        let conversationId = "";
+        let chatSending = false;
 
         async function loadCases() {
             const container = document.getElementById('cases-grid');
@@ -252,6 +286,7 @@
         function openCaseModal(item) {
             const modal = document.getElementById('game-modal');
             const modalCard = document.getElementById('modal-card');
+            selectedCase = item;
 
             // 填入数据
             document.getElementById('modal-title').innerText = item.title;
@@ -284,6 +319,157 @@
                 modal.classList.add('hidden');
             }, 300);
         }
+
+        async function startChatFromModal() {
+            if (!selectedCase) {
+                return;
+            }
+
+            closeModal();
+
+            document.getElementById('chat-title').textContent = selectedCase.title;
+            document.getElementById('chat-messages').innerHTML = '';
+            conversationId = "";
+
+            showPage(
+                document.getElementById('page-cases'),
+                document.getElementById('page-chat')
+            );
+
+            await submitChat(selectedCase.id, true);
+            document.getElementById('chat-input').focus();
+        }
+
+        function leaveChat() {
+            showPage(
+                document.getElementById('page-chat'),
+                document.getElementById('page-cases')
+            );
+        }
+
+        function splitAnswer(answer) {
+            return answer
+                .split(/\r?\n\s*\r?\n/)
+                .map((item) => item.trim())
+                .filter(Boolean);
+        }
+
+        function parseMessage(raw) {
+            const match = raw.match(
+                /^([^（：:\n]{1,24})(?:（([^）\n]{1,24})）)?[：:]\s*([\s\S]*)$/
+            );
+
+            if (!match) {
+                return { name: "", expression: "", text: raw.trim() };
+            }
+
+            return {
+                name: match[1].trim(),
+                expression: (match[2] || "").trim(),
+                text: match[3].trim()
+            };
+        }
+
+        function addAnswerMessages(answer) {
+            splitAnswer(answer).forEach((block) => {
+                const message = parseMessage(block);
+                addChatMessage("other", message.text || block, {
+                    name: message.name,
+                    expression: message.expression
+                });
+            });
+        }
+
+        function scrollChatToBottom() {
+            const list = document.getElementById('chat-messages');
+            requestAnimationFrame(() => {
+                list.scrollTo({
+                    top: list.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        function addChatMessage(side, text, meta = {}) {
+            const list = document.getElementById('chat-messages');
+            const row = document.createElement('div');
+            row.className = side === 'me' ? 'chat-row chat-row-me' : 'chat-row';
+
+            if (side === 'other') {
+                const label = document.createElement('div');
+                label.className = 'chat-label';
+                label.textContent = meta.name || 'USER';
+                row.appendChild(label);
+            }
+
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble chat-bubble-${side}`;
+            bubble.textContent = text;
+            if (meta.expression) {
+                bubble.dataset.expression = meta.expression;
+            }
+            row.appendChild(bubble);
+
+            list.appendChild(row);
+            scrollChatToBottom();
+        }
+
+        function setChatBusy(busy) {
+            document.getElementById('chat-input').disabled = busy;
+            document.getElementById('chat-send').disabled = busy;
+        }
+
+        async function submitChat(text, isStart = false) {
+            if (chatSending) {
+                return;
+            }
+
+            chatSending = true;
+            setChatBusy(true);
+
+            if (!isStart) {
+                addChatMessage('me', text);
+            }
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: text,
+                        conversation_id: conversationId
+                    })
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '请求失败');
+                }
+
+                conversationId = data.conversation_id || conversationId;
+                addAnswerMessages(data.answer || '（没有回复）');
+            } catch (error) {
+                addChatMessage('system', `连接失败：${error.message}`);
+            } finally {
+                chatSending = false;
+                setChatBusy(false);
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        document.getElementById('chat-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+
+            if (!text || chatSending) {
+                return;
+            }
+
+            input.value = '';
+            submitChat(text);
+        });
     </script>
     <script src="assets/js/wordmark.js"></script>
 </body>

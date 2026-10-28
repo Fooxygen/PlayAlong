@@ -115,6 +115,57 @@ button,
     display: none;
 }
 
+/* Chat */
+.chat-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    max-width: 100%;
+}
+
+.chat-row-me {
+    align-items: flex-end;
+}
+
+.chat-label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+    padding: 0 0.35rem;
+}
+
+.chat-bubble {
+    max-width: 78%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #2d2d3a;
+    border-radius: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-shadow: 3px 3px 0 #2d2d3a;
+}
+
+.chat-bubble-other {
+    background: #ffffff;
+    border-bottom-left-radius: 0.35rem;
+}
+
+.chat-bubble-me {
+    background: #f472b6;
+    color: #ffffff;
+    border-bottom-right-radius: 0.35rem;
+}
+
+.chat-bubble-system {
+    background: #fff7d6;
+    color: #6b5b00;
+    border-color: #d6b800;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
