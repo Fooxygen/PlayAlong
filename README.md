@@ -53,11 +53,11 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 
 | 目录 | 内容 |
 | - | - |
-| `cases/` | `pack01.md` 案卷作者源、`pack01.json` 运行时数据 |
-| `docs/` | `deps.md`、`run.md`、`verify.md` |
-| `ifpkg/` | `PlayAlong.ifpkg`，Dify 应用包 |
-| `scripts/` | `seed_cases.py`，案卷校验与 PowerContext 写入 |
-| `web/` | `index.html`、`server.py` 与前端资源 |
+| `cases/` | 案卷原始文本、案卷结构文本 |
+| `docs/` | 依赖手册、运行手册、验证手册，案卷原始文本结构化提示词 |
+| `ifpkg/` | Dify 应用包 |
+| `scripts/` | 案卷校验与写入脚本 |
+| `web/` | 前端后端与资源文件 |
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
@@ -73,13 +73,12 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
-## 文档
+## 快速开始
 
-| 文档 | 内容 |
-| - | - |
-| [`docs/deps.md`](./docs/deps.md) | 运行环境、软件与插件版本 |
-| [`docs/run.md`](./docs/run.md) | PowerContext、Dify 与本地前端的配置、导入 DSL、初始化数据与启动步骤 |
-| [`docs/verify.md`](./docs/verify.md) | 验证样例、操作步骤、预期表现与运行证据 |
+- 阅读 `docs/deps.md` 了解 PlayAlong 的依赖环境；
+- 阅读 `docs/run.md` 了解 PlayAlong 的配置运行步骤；
+- 阅读 `docs/verify.md` 了解 PlayAlong 的验证步骤；
+- 使用 `docs/case_struct.md` 便于 Agent 完成案卷原始文本至结构文本的转换；
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 

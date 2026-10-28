@@ -4,7 +4,7 @@
 
 | 目录 | 内容 |
 | - | - |
-| `cases/` | 案卷作者源与运行时数据 |
+| `cases/` | 案卷原始文本与案卷结构文本 |
 | `docs/` | 依赖、配置与运行文档 |
 | `ifpkg/` | `PlayAlong.ifpkg`，Dify 应用包 |
 | `scripts/` | 案卷校验与 PowerContext 写入 |

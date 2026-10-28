@@ -56,8 +56,8 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 
 | Directory | Content |
 | - | - |
-| `cases/` | Case sources (Markdown) and runtime data (JSON) |
-| `docs/` | `deps.md`, `run.md`, `verify.md` |
+| `cases/` | Case source text (Markdown) and case structure text (JSON) |
+| `docs/` | `deps.md`, `run.md`, `verify.md`, `case_struct.md` |
 | `ifpkg/` | `PlayAlong.ifpkg`, Dify app package |
 | `scripts/` | `seed_cases.py`, case validation and PowerContext seeding |
 | `web/` | `index.html`, `server.py` and frontend assets |
@@ -83,6 +83,7 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 | [`docs/deps.md`](./docs/deps.md) | Runtime environment, software and plugin versions |
 | [`docs/run.md`](./docs/run.md) | PowerContext, Dify and frontend configuration, DSL import, data initialization and startup |
 | [`docs/verify.md`](./docs/verify.md) | Verification steps, expected behaviour and evidence |
+| [`docs/case_struct.md`](./docs/case_struct.md) | Prompt and field reference for converting case source text to case structure text |
 
 > The documents are written in Chinese.
 

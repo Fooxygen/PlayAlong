@@ -1,0 +1,303 @@
+{
+  "pack_id": "pack02",
+  "title": "失声的主唱",
+  "version": 1,
+  "description": "地下乐队的主唱失踪了。今晚是最后一场，票已经卖完，歌迷站在第一排。",
+  "difficulty": 3,
+  "rounds": 6,
+  "profile": {
+    "name": "阿声",
+    "age": 29,
+    "occupation": "地下乐队主唱，白天在琴行修吉他",
+    "personality": "倔，话少，写歌比说话顺",
+    "appearance": "瘦，左耳一颗银色耳钉，常年穿一件洗旧的黑色乐队 T 恤",
+    "disappearance": "8 月 17 日夜里没有回住处，手机留在排练室，第二天就是最后一场演出",
+    "secret": "阿声的声带坏了，医生说他不能再唱。他不想让乐队赔违约金，也不想让歌迷看到他唱不出来，就躲了起来，让替补顶最后一场。"
+  },
+  "npcs": [
+    {
+      "id": "npc1",
+      "name": "阿岚",
+      "relation": "乐队吉他手，和阿声写了十年歌",
+      "age": 30,
+      "personality": "稳，护短，嘴上不饶人",
+      "speech_style": "短句，习惯先说“行”，再反驳",
+      "opening": "阿声呢？再不开场，票就白卖了。",
+      "greeting_hint": "压着火",
+      "intro": "阿岚蹲在舞台边调弦，脚边放着两瓶没开的啤酒。她看见你背着阿声的琴进来，先愣了一下。",
+      "questions": [
+        {
+          "id": "q1",
+          "content": "阿声到底去哪了？你最后一次见他是什么时候？",
+          "topic": "行踪",
+          "targets": [
+            "f11"
+          ]
+        },
+        {
+          "id": "q2",
+          "content": "歌单最后一首为什么换了？是他改的？",
+          "topic": "歌单",
+          "targets": [
+            "f12"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "id": "f11",
+          "topic": "行踪",
+          "text": "阿声昨天还在排练室，嗓子哑得说不出话，只用手比划。",
+          "accepts": [
+            "排练室",
+            "嗓子",
+            "哑了",
+            "昨天",
+            "不知道"
+          ],
+          "keywords": [
+            "排练室",
+            "嗓子",
+            "昨天"
+          ],
+          "weight": 2,
+          "reaction_if_missed": "「他昨天还在排练室，嗓子哑得说不出话。」",
+          "source_fragment": ""
+        },
+        {
+          "id": "f12",
+          "topic": "歌单",
+          "text": "歌单最后一首是阿声换的，换成了《唱完这次就走》。",
+          "accepts": [
+            "他改的",
+            "换了",
+            "最后一首",
+            "唱完这次就走"
+          ],
+          "keywords": [
+            "歌单",
+            "最后一首",
+            "改"
+          ],
+          "weight": 2,
+          "reaction_if_missed": "「最后一首是他自己换的。」",
+          "source_fragment": "g1"
+        }
+      ]
+    },
+    {
+      "id": "npc2",
+      "name": "赵哥",
+      "relation": "Livehouse 老板，今晚的演出场地",
+      "age": 45,
+      "personality": "精明，怕赔钱，说话圆滑",
+      "speech_style": "喜欢用“兄弟”开头，句尾常带“你懂的”",
+      "opening": "兄弟，今晚满场，主唱不来我可就亏大了。",
+      "greeting_hint": "试探",
+      "intro": "赵哥站在吧台后面数票，看见你进来，把计算器往你这边推了推。",
+      "questions": [
+        {
+          "id": "q1",
+          "content": "阿声跟你说了没有？今晚演不了要赔多少？",
+          "topic": "合同",
+          "targets": [
+            "f21"
+          ]
+        },
+        {
+          "id": "q2",
+          "content": "外面那些歌迷都说是冲他来的，你打算怎么收场？",
+          "topic": "歌迷",
+          "targets": [
+            "f22"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "id": "f21",
+          "topic": "合同",
+          "text": "演出合同写着，临时取消要赔三倍场地费。",
+          "accepts": [
+            "赔钱",
+            "三倍",
+            "合同",
+            "演",
+            "不取消"
+          ],
+          "keywords": [
+            "合同",
+            "违约金",
+            "三倍"
+          ],
+          "weight": 2,
+          "reaction_if_missed": "「合同写着，取消要赔三倍。」",
+          "source_fragment": "g4"
+        },
+        {
+          "id": "f22",
+          "topic": "歌迷",
+          "text": "歌迷是从外地赶来的，有人买了十张票。",
+          "accepts": [
+            "唱",
+            "演完",
+            "不取消",
+            "让他们进来"
+          ],
+          "keywords": [
+            "歌迷",
+            "外地",
+            "十张票"
+          ],
+          "weight": 1,
+          "reaction_if_missed": "「外面那些人是专程来的。」",
+          "source_fragment": ""
+        }
+      ]
+    },
+    {
+      "id": "npc3",
+      "name": "小满",
+      "relation": "追了乐队十年的歌迷",
+      "age": 24,
+      "personality": "安静，执拗，记得每首歌的细节",
+      "speech_style": "说话轻，喜欢引用歌词",
+      "opening": "我能听出来。你不是他。",
+      "greeting_hint": "直接点破",
+      "intro": "小满站在第一排，手里攥着一张被折过的歌单。她没有喊，只是看着你。",
+      "questions": [
+        {
+          "id": "q1",
+          "content": "阿声是不是出事了？他从来不换最后一首。",
+          "topic": "最后一首",
+          "targets": [
+            "f31"
+          ]
+        },
+        {
+          "id": "q2",
+          "content": "你为什么要替他唱？",
+          "topic": "替唱",
+          "targets": [
+            "f32"
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "id": "f31",
+          "topic": "最后一首",
+          "text": "阿声每场都唱《唱完这次就走》，但从不唱最后一句。",
+          "accepts": [
+            "出事了",
+            "嗓子",
+            "病了",
+            "不知道",
+            "替他"
+          ],
+          "keywords": [
+            "最后一首",
+            "最后一句",
+            "不唱"
+          ],
+          "weight": 3,
+          "reaction_if_missed": "「他从来不换最后一首。」",
+          "source_fragment": "g2"
+        },
+        {
+          "id": "f32",
+          "topic": "替唱",
+          "text": "小满知道阿声的嗓子出了问题，她在医院见过他。",
+          "accepts": [
+            "医院",
+            "嗓子",
+            "见过",
+            "知道",
+            "不能说"
+          ],
+          "keywords": [
+            "医院",
+            "嗓子",
+            "见过"
+          ],
+          "weight": 2,
+          "reaction_if_missed": "「我在医院见过他。」",
+          "source_fragment": "g3"
+        }
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "id": "g1",
+      "title": "一张歌单",
+      "text": "8 月 18 日，最后一场。最后一首被换成《唱完这次就走》。",
+      "certainty": "accurate",
+      "keywords": [
+        "歌单",
+        "8月18",
+        "最后一首"
+      ],
+      "requires": {
+        "npc": "npc1",
+        "mentions": "歌单"
+      }
+    },
+    {
+      "id": "g2",
+      "title": "被改过的歌词",
+      "text": "最后一句被划掉了，旁边写着：唱完这次就走。",
+      "certainty": "inaccurate",
+      "keywords": [
+        "歌词",
+        "最后一句",
+        "划掉"
+      ],
+      "requires": {
+        "npc": "npc3",
+        "mentions": "最后一首"
+      }
+    },
+    {
+      "id": "g3",
+      "title": "一盒喉药",
+      "text": "喉药已经空了。说明书背面写着：声带禁声两周。",
+      "certainty": "accurate",
+      "keywords": [
+        "喉药",
+        "空",
+        "声带"
+      ],
+      "requires": {
+        "npc": "npc3",
+        "mentions": "嗓子"
+      }
+    },
+    {
+      "id": "g4",
+      "title": "演出合同",
+      "text": "演出合同写着，临时取消要赔三倍场地费。日期是 8 月 18 日。",
+      "certainty": "accurate",
+      "keywords": [
+        "合同",
+        "违约金",
+        "8月18"
+      ],
+      "requires": {
+        "npc": "npc2",
+        "mentions": "合同"
+      }
+    },
+    {
+      "id": "g5",
+      "title": "没发出去的录音",
+      "text": "手机里有一段没发出去的录音。只有呼吸声，最后一句是：对不起。",
+      "certainty": "accurate",
+      "keywords": [
+        "录音",
+        "呼吸",
+        "对不起"
+      ]
+    }
+  ]
+}
