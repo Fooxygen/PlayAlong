@@ -92,8 +92,9 @@
         </section>
 
         <!-- ================= PAGE 3: CHAT ================= -->
-        <section id="page-chat" class="page-view page-hidden page-gone w-full h-full flex items-center justify-center">
-            <div class="w-full sm:w-1/2 h-[90vh] flex flex-col bg-white/90 border-[3px] border-[#2d2d3a] rounded-3xl shadow-[8px_8px_0px_#2d2d3a] overflow-hidden">
+        <section id="page-chat" class="page-view page-hidden page-gone w-full h-full flex items-center justify-center relative overflow-hidden">
+            <div class="chat-stage">
+            <div class="chat-panel flex flex-col bg-white/90 border-[3px] border-[#2d2d3a] rounded-3xl shadow-[8px_8px_0px_#2d2d3a] overflow-hidden">
                 <header class="flex items-center gap-3 px-4 sm:px-5 py-3 border-b-[3px] border-[#2d2d3a] bg-pink-100">
                     <button onclick="leaveChat()" class="kawaii-btn w-9 h-9 shrink-0 bg-white hover:bg-gray-100 rounded-xl flex items-center justify-center text-[#2d2d3a]" title="返回案卷">
                         <i class="fa-solid fa-arrow-left"></i>
@@ -119,6 +120,22 @@
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </form>
+            </div>
+
+            <aside id="ending-panel" class="ending-panel flex flex-col bg-white/95 border-[3px] border-[#2d2d3a] rounded-3xl shadow-[8px_8px_0px_#2d2d3a] overflow-hidden">
+                <header class="px-5 py-4 border-b-[3px] border-[#2d2d3a] bg-pink-100">
+                    <div class="text-xs font-black tracking-widest text-pink-500 uppercase">Case Closed</div>
+                    <h2 class="text-xl font-black text-[#2d2d3a]">结局</h2>
+                </header>
+
+                <div id="ending-content" class="ending-content flex-1 overflow-y-auto px-5 sm:px-7 py-6 bg-[#fdfbfb]/80"></div>
+
+                <footer class="p-3 sm:p-4 border-t-[3px] border-[#2d2d3a] bg-white">
+                    <button onclick="replayGame()" class="kawaii-btn w-full bg-pink-400 hover:bg-pink-300 text-white font-black text-lg py-3 rounded-2xl">
+                        再来一局
+                    </button>
+                </footer>
+            </aside>
             </div>
         </section>
 
@@ -327,13 +344,16 @@
 
             closeModal();
 
+            const pageChat = document.getElementById('page-chat');
+            pageChat.classList.remove('ending-open');
+            document.getElementById('ending-content').innerHTML = '';
             document.getElementById('chat-title').textContent = selectedCase.title;
             document.getElementById('chat-messages').innerHTML = '';
             conversationId = "";
 
             showPage(
                 document.getElementById('page-cases'),
-                document.getElementById('page-chat')
+                pageChat
             );
 
             await submitChat(selectedCase.id, true);
@@ -370,14 +390,117 @@
             };
         }
 
-        function addAnswerMessages(answer) {
-            splitAnswer(answer).forEach((block) => {
+        function wait(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        function addExpressionMessage(name, expression) {
+            const list = document.getElementById('chat-messages');
+            const row = document.createElement('div');
+            row.className = 'chat-expression';
+            row.textContent = `${name} ${expression}`;
+            list.appendChild(row);
+            scrollChatToBottom();
+        }
+
+        async function addAnswerMessages(answer) {
+            const blocks = splitAnswer(answer);
+            let isFirst = true;
+
+            for (const block of blocks) {
                 const message = parseMessage(block);
+
+                if (!isFirst) {
+                    await wait(1000);
+                }
+                isFirst = false;
+
+                if (message.name && message.expression) {
+                    addExpressionMessage(message.name, message.expression);
+                    await wait(1000);
+                }
+
                 addChatMessage("other", message.text || block, {
-                    name: message.name,
-                    expression: message.expression
+                    name: message.name
                 });
-            });
+            }
+        }
+
+        function isEndingAnswer(answer) {
+            const text = String(answer || "").trimStart();
+            return (
+                text.startsWith("# 所有关系人都见完了") ||
+                text.startsWith("# 你露馅了") ||
+                /(^|\n)#{1,3}\s*复盘/.test(text)
+            );
+        }
+
+        function renderEndingMarkdown(markdown, container) {
+            container.innerHTML = "";
+
+            const lines = String(markdown || "").split(/\r?\n/);
+            let list = null;
+
+            const appendText = (tag, text) => {
+                const element = document.createElement(tag);
+                element.textContent = text;
+                container.appendChild(element);
+            };
+
+            for (const raw of lines) {
+                const line = raw.trim();
+
+                if (!line) {
+                    list = null;
+                    continue;
+                }
+
+                if (line.startsWith("### ")) {
+                    list = null;
+                    appendText("h3", line.slice(4).trim());
+                } else if (line.startsWith("## ")) {
+                    list = null;
+                    appendText("h2", line.slice(3).trim());
+                } else if (line.startsWith("# ")) {
+                    list = null;
+                    appendText("h1", line.slice(2).trim());
+                } else if (/^[-*]\s+/.test(line)) {
+                    if (!list) {
+                        list = document.createElement("ul");
+                        container.appendChild(list);
+                    }
+                    const item = document.createElement("li");
+                    item.textContent = line.replace(/^[-*]\s+/, "");
+                    list.appendChild(item);
+                } else {
+                    list = null;
+                    appendText("p", line);
+                }
+            }
+        }
+
+        function openEnding(answer) {
+            const page = document.getElementById("page-chat");
+            const content = document.getElementById("ending-content");
+
+            renderEndingMarkdown(answer, content);
+            content.scrollTop = 0;
+            page.classList.add("ending-open");
+        }
+
+        function replayGame() {
+            const pageChat = document.getElementById("page-chat");
+            const pageCases = document.getElementById("page-cases");
+
+            conversationId = "";
+            selectedCase = null;
+            showPage(pageChat, pageCases);
+
+            setTimeout(() => {
+                pageChat.classList.remove("ending-open");
+                document.getElementById("ending-content").innerHTML = "";
+                document.getElementById("chat-messages").innerHTML = "";
+            }, 450);
         }
 
         function scrollChatToBottom() {
@@ -447,13 +570,20 @@
                 }
 
                 conversationId = data.conversation_id || conversationId;
-                addAnswerMessages(data.answer || '（没有回复）');
+
+                if (isEndingAnswer(data.answer)) {
+                    openEnding(data.answer);
+                } else {
+                    await addAnswerMessages(data.answer || '（没有回复）');
+                }
             } catch (error) {
                 addChatMessage('system', `连接失败：${error.message}`);
             } finally {
                 chatSending = false;
                 setChatBusy(false);
-                document.getElementById('chat-input').focus();
+                if (!document.getElementById('page-chat').classList.contains('ending-open')) {
+                    document.getElementById('chat-input').focus();
+                }
             }
         }
 
