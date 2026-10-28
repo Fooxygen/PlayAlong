@@ -52,7 +52,7 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 | 目录 | 内容 |
 | - | - |
 | `cases/` | 案卷原始文本、案卷结构文本 |
-| `docs/` | 依赖手册、运行手册、验证手册，案卷原始文本结构化提示词 |
+| `docs/` | 依赖手册、运行手册、验证手册、案卷结构化提示词与新增手册 |
 | `ifpkg/` | Dify 应用包 |
 | `scripts/` | 案卷校验与写入脚本 |
 | `web/` | 前端后端与资源文件 |
@@ -76,6 +76,7 @@ PlayAlong 是一个互动剧情与角色扮演小游戏。你顶替了一位已�
 - 阅读 `docs/deps.md` 了解 PlayAlong 的依赖环境；
 - 阅读 `docs/run.md` 了解 PlayAlong 的配置运行步骤；
 - 阅读 `docs/verify.md` 了解 PlayAlong 的验证步骤；
+- 阅读 `docs/case_add.md` 设计自己的案卷；
 - 使用 `docs/case_struct.md` 便于 Agent 完成案卷原始文本至结构文本的转换；
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>

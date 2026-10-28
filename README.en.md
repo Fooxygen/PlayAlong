@@ -9,9 +9,6 @@ English
   <p align="center">
     You take the place of a missing person, with nothing but his incomplete memories.
     <br /><br />
-    <a href="https://github.com/Fooxygen/PlayAlong">
-      <strong>» Read Wiki</strong>
-    </a>
     <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=bug">
       <strong>» Report an issue</strong>
     </a>
@@ -26,7 +23,7 @@ English
 
 PlayAlong is an interactive narrative and role-playing game. You take the place of a missing person and face everyone who knew him, using nothing but his incomplete memories.
 
-One session includes:
+A session includes:
 
 - choosing a case from the case library;
 - talking to a series of people who know him;
@@ -34,7 +31,7 @@ One session includes:
 - filling the gaps with invented answers;
 - seeing, at the end, which memories were his and which ones you made up.
 
-The flow is orchestrated in Dify. Cases, dialogue records and memories are stored in PowerContext. To run the project, see **Documents** and **Configuration and startup** below.
+The flow is orchestrated in Dify. Cases, dialogue records and memories are stored in PowerContext. See the documents linked below for setup and verification.
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
@@ -54,11 +51,11 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 
 | Directory | Content |
 | - | - |
-| `cases/` | Case source text (Markdown) and case structure text (JSON) |
-| `docs/` | `deps.md`, `run.md`, `verify.md`, `case_struct.md` |
-| `ifpkg/` | `PlayAlong.ifpkg`, Dify app package |
-| `scripts/` | `seed_cases.py`, case validation and PowerContext seeding |
-| `web/` | `index.html`, `server.py` and frontend assets |
+| `cases/` | Case source text and case structure text |
+| `docs/` | Dependency, run, verification, case structure prompt and case authoring guides |
+| `ifpkg/` | Dify app package |
+| `scripts/` | Case validation and seeding |
+| `web/` | Frontend, backend and assets |
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
@@ -74,34 +71,18 @@ The flow is orchestrated in Dify. Cases, dialogue records and memories are store
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
-## Documents
+## Quick start
 
-| Document | Content |
-| - | - |
-| [`docs/deps.md`](./docs/deps.md) | Runtime environment, software and plugin versions |
-| [`docs/run.md`](./docs/run.md) | PowerContext, Dify and frontend configuration, DSL import, data initialization and startup |
-| [`docs/verify.md`](./docs/verify.md) | Verification steps, expected behaviour and evidence |
-| [`docs/case_struct.md`](./docs/case_struct.md) | Prompt and field reference for converting case source text to case structure text |
-
-> The documents are written in Chinese.
-
-<p align="right"><a href="#readme-top">↑ Back to top</a></p>
-
-## Configuration and startup
-
-> See [`docs/run.md`](./docs/run.md) for the full setup.
-
-```text
-1. Initialize PowerContext and seed the cases
-2. Import the Dify app from ifpkg/
-3. Configure the Dify environment variables
-4. Start the local frontend
-```
+- Read `docs/deps.md` for the runtime dependencies;
+- Read `docs/run.md` for configuration and startup;
+- Read `docs/verify.md` for the verification steps;
+- Use `docs/case_struct.md` when an Agent converts case source text to case structure text;
+- Read `docs/case_add.md` to design your own case;
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
 
 ## License
 
-Copyright (c) 2026 Fooxygen. Licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 Fooxygen. With BaseTUT. Licensed under the [MIT License](LICENSE).
 
 <p align="right"><a href="#readme-top">↑ Back to top</a></p>
