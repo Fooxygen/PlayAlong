@@ -51,10 +51,14 @@
 | 项目 | 说明 |
 | - | - |
 | 页面 | 原生 HTML / CSS / JavaScript |
-| 字体 | 开源字体 Maple Mono、Keinann Maru POP |
+| 字体 | Keinann Maru POP（GB2312 子集）、Quicksand（拉丁子集） |
+| 字体回退 | Microsoft YaHei UI、Noto Sans CJK SC |
+| 字体许可 | Quicksand 为 OFL；Keinann Maru POP 按其发布页许可使用 |
 | 图标 | Font Awesome Free |
 | CSS | Tailwind CSS 3.4.17 预编译 |
 | 运行时依赖 | 无 |
+
+字体子集由 `scripts/build_fonts.py` 生成，覆盖 ASCII、常用标点、GB2312 一二级汉字，以及页面和案卷中出现的字符。
 
 只有修改样式时才需要 Node.js 重新编译 Tailwind，运行作品不需要。
 
