@@ -7,7 +7,7 @@ English
 
   <h3 align="center">PlayAlong</h3>
   <p align="center">
-    The Mini interactive narrative and Role-playing Game, built with Dify ChatFlow and PowerContext
+    The Mini Interactive Narrative and Role-Playing Game, built with Dify ChatFlow and PowerContext
     <br /><br />
     <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=bug&template=bug-report.md">
       <strong>» Report Bug</strong>
