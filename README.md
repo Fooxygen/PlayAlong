@@ -7,12 +7,12 @@
 
   <h3 align="center">PlayAlong</h3>
   <p align="center">
-    你顶替了一个失踪的人，手里只有他不完整的记忆。
+    基于 Dify ChatFlow 和 PowerContext 构建的一个互动剧情与角色扮演小游戏
     <br /><br />
-    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=bug">
-      <strong>» 报告问题</strong>
+    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=bug&template=bug-report.md">
+      <strong>» 报告漏洞</strong>
     </a>
-    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=enhancement">
+    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=enhancement&template=feature-request.md">
       <strong>» 请求特性</strong>
     </a>
   </p>

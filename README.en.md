@@ -7,13 +7,13 @@ English
 
   <h3 align="center">PlayAlong</h3>
   <p align="center">
-    You take the place of a missing person, with nothing but his incomplete memories.
+    The Mini interactive narrative and Role-playing Game, built with Dify ChatFlow and PowerContext
     <br /><br />
-    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=bug">
-      <strong>» Report an issue</strong>
+    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=bug&template=bug-report.md">
+      <strong>» Report Bug</strong>
     </a>
-    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=enhancement">
-      <strong>» Request a feature</strong>
+    <a href="https://github.com/Fooxygen/PlayAlong/issues/new?labels=enhancement&template=feature-request.md">
+      <strong>» Request Feature</strong>
     </a>
   </p>
 
